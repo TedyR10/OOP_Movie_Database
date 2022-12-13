@@ -1,0 +1,54 @@
+package session;
+
+import backend.User;
+
+public class Session {
+    private boolean login;
+    private String currentPage;
+    private User currentUser;
+
+    /**
+     * for coding style
+     */
+    public Session() {
+        this.login = false;
+        this.currentPage = "homepage neautentificat";
+        this.currentUser = null;
+    }
+    /**
+     * for coding style
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    /**
+     * for coding style
+     */
+    public void setCurrentUser(final User currentUser) {
+        this.currentUser = currentUser;
+    }
+    /**
+     * for coding style
+     */
+    public boolean isLogin() {
+        return login;
+    }
+    /**
+     * for coding style
+     */
+    public void setLogin(final boolean login) {
+        this.login = login;
+    }
+    /**
+     * for coding style
+     */
+    public String getCurrentPage() {
+        return currentPage;
+    }
+    /**
+     * for coding style
+     */
+    public void setCurrentPage(final String currentPage) {
+        this.currentPage = currentPage;
+    }
+}
