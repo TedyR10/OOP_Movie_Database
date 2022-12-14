@@ -1,11 +1,13 @@
 package session;
 
+import backend.Movie;
 import backend.User;
 
 public class Session {
     private boolean login;
     private String currentPage;
     private User currentUser;
+    private Movie currentMovie;
 
     /**
      * for coding style
@@ -14,7 +16,21 @@ public class Session {
         this.login = false;
         this.currentPage = "homepage neautentificat";
         this.currentUser = null;
+        this.currentMovie = null;
     }
+    /**
+     * for coding style
+     */
+    public Movie getCurrentMovie() {
+        return currentMovie;
+    }
+    /**
+     * for coding style
+     */
+    public void setCurrentMovie(final Movie currentMovie) {
+        this.currentMovie = currentMovie;
+    }
+
     /**
      * for coding style
      */

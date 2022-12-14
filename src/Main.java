@@ -1,5 +1,5 @@
-//import com.fasterxml.jackson.databind.DeserializationFeature;
 import backend.ActionHandler;
+import backend.MoviesDatabase;
 import backend.UsersDatabase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -31,7 +31,9 @@ public final class Main {
                 InputData.class);
         Session session = new Session();
         UsersDatabase usersDatabase = UsersDatabase.getInstance();
-        usersDatabase.setUsers(input.getUsers());
+        MoviesDatabase moviesDatabase = MoviesDatabase.getInstance();
+        moviesDatabase.setMovies(input.getMovies());
+        usersDatabase.setUsers(input.getUsers(), moviesDatabase);
         ArrayNode output = objectMapper.createArrayNode();
 
         for (ActionsInput action : input.getActions()) {
@@ -42,10 +44,11 @@ public final class Main {
             System.out.println();
 
             ActionHandler actionHandler = new ActionHandler();
-            actionHandler.handle(action, session, usersDatabase, output);
+            actionHandler.handle(action, session, usersDatabase, moviesDatabase, output);
         }
 
         usersDatabase.clearDatabase();
+        moviesDatabase.clearDatabase();
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(resultFile, output);

@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.Movie;
 import backend.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,26 +9,12 @@ import java.util.ArrayList;
 
 abstract class Output {
     public abstract ObjectNode generateOutput(ObjectMapper objectMapper,
-                                              ObjectNode node, User user);
-}
-class GeneralOutput extends Output {
-    @Override
-    public ObjectNode generateOutput(final ObjectMapper objectMapper,
-                                     final ObjectNode node, final User user) {
-        node.put("error", "Error");
-        ArrayList<String> movies = new ArrayList<String>();
-        node.putPOJO("currentMoviesList", movies);
-        node.putNull("currentUser");
-        return node;
-    }
-}
-class UserOutput extends Output {
+                                              ObjectNode node, User user, ArrayList<Movie> movies,
+                                              Movie movie);
 
-    @Override
-    public ObjectNode generateOutput(final ObjectMapper objectMapper,
-                                     final ObjectNode node, final User user) {
-        node.putNull("error");
-        node.putPOJO("currentMoviesList", user.getCurrentMoviesList());
+    public ObjectNode userCreator(final ObjectMapper objectMapper, final ObjectNode node,
+                                  final User user,
+                                  final ArrayList<Movie> movies, final Movie movie) {
         ObjectNode userOut = objectMapper.createObjectNode();
         ObjectNode credentials = objectMapper.createObjectNode();
         credentials.put("name", user.getName());
@@ -43,16 +30,66 @@ class UserOutput extends Output {
         userOut.putPOJO("watchedMovies", user.getWatchedMovies());
         userOut.putPOJO("likedMovies", user.getLikedMovies());
         userOut.putPOJO("ratedMovies", user.getRatedMovies());
-        node.set("currentUser", userOut);
+        return userOut.deepCopy();
+    }
+
+    public ObjectNode movieCreator(final ObjectMapper objectMapper, final ObjectNode node,
+                                   final User user,
+                                   final ArrayList<Movie> movies, final Movie movie) {
         return node;
     }
 }
-class HawaiianPizza extends Output {
+class GeneralOutput extends Output {
+    @Override
+    public ObjectNode generateOutput(final ObjectMapper objectMapper,
+                                     final ObjectNode node, final User user,
+                                     final ArrayList<Movie> movies, final Movie movie) {
+        node.put("error", "Error");
+        ArrayList<String> moviesOut = new ArrayList<String>();
+        node.putPOJO("currentMoviesList", moviesOut);
+        node.putNull("currentUser");
+        return node.deepCopy();
+    }
+}
+class UserOutput extends Output {
 
     @Override
     public ObjectNode generateOutput(final ObjectMapper objectMapper,
-                                     final ObjectNode node, final User user) {
-        return null;
+                                     final ObjectNode node, final User user,
+                                     final ArrayList<Movie> movies, final Movie movie) {
+        node.putNull("error");
+        ArrayList<String> moviesOut = new ArrayList<String>();
+        node.putPOJO("currentMoviesList", moviesOut);
+        ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
+        node.set("currentUser", userOut);
+        return node.deepCopy();
+    }
+}
+class Movies extends Output {
+
+    @Override
+    public ObjectNode generateOutput(final ObjectMapper objectMapper,
+                                     final ObjectNode node, final User user,
+                                     final ArrayList<Movie> movies, final Movie movie) {
+        node.putNull("error");
+        node.putPOJO("currentMoviesList", movies);
+        ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
+        node.set("currentUser", userOut);
+        return node.deepCopy();
+    }
+}
+
+class Details extends Output {
+
+    @Override
+    public ObjectNode generateOutput(final ObjectMapper objectMapper,
+                                     final ObjectNode node, final User user,
+                                     final ArrayList<Movie> movies, final Movie movie) {
+        node.putNull("error");
+        node.putPOJO("currentMoviesList", movie);
+        ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
+        node.set("currentUser", userOut);
+        return node.deepCopy();
     }
 }
 
@@ -64,14 +101,19 @@ final class OutputFactory {
     }
 
     public enum OutputType {
-        General, User, Hawaiian
+        General, User, Movies, Details
     }
-    public static ObjectNode createOutput(final OutputType outputType,
-                                          final User user) {
+    public static ObjectNode createOutput(final OutputType outputType, final User user,
+                                          final ArrayList<Movie> movies, final Movie movie) {
         switch (outputType) {
-            case General:   return new GeneralOutput().generateOutput(objectMapper, node, user);
-            case User:    return new UserOutput().generateOutput(objectMapper, node, user);
-            case Hawaiian:  return new HawaiianPizza().generateOutput(objectMapper, node, user);
+            case General:   return
+                    new GeneralOutput().generateOutput(objectMapper, node, user, movies, movie);
+            case User:
+                return new UserOutput().generateOutput(objectMapper, node, user, movies, movie);
+            case Movies:
+                return new Movies().generateOutput(objectMapper, node, user, movies, movie);
+            case Details:
+                return new Details().generateOutput(objectMapper, node, user, movies, movie);
             default:    return null;
         }
     }
@@ -81,10 +123,15 @@ public class OutputGenerator {
 
     private String outputType;
     private User user;
+    private ArrayList<Movie> movies;
+    private Movie movie;
 
-    public OutputGenerator(final String type, final User outUser) {
+    public OutputGenerator(final String type, final User outUser,
+                           final ArrayList<Movie> outMovies, final Movie outMovie) {
         this.outputType = type;
         this.user = outUser;
+        this.movies = outMovies;
+        this.movie = outMovie;
     }
 
     /**
@@ -94,9 +141,17 @@ public class OutputGenerator {
     public ObjectNode outputCreator() {
         switch (this.outputType) {
             case "General":
-                return OutputFactory.createOutput(OutputFactory.OutputType.General, user);
+                return OutputFactory.createOutput(
+                        OutputFactory.OutputType.General, user, movies, movie);
             case "User":
-                return OutputFactory.createOutput(OutputFactory.OutputType.User, user);
+                return OutputFactory.createOutput(
+                        OutputFactory.OutputType.User, user, movies, movie);
+            case "Movies":
+                return OutputFactory.createOutput(
+                        OutputFactory.OutputType.Movies, user, movies, movie);
+            case "Details":
+                return OutputFactory.createOutput(
+                        OutputFactory.OutputType.Details, user, movies, movie);
             default:
                 return null;
         }

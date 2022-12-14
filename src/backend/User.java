@@ -1,6 +1,7 @@
 package backend;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class User {
 
@@ -10,12 +11,13 @@ public class User {
     private final String country;
     private int balance;
     private int tokens = 0;
-    private ArrayList<String> currentMoviesList = new ArrayList<String>();
-    private ArrayList<String> purchasedMovies = new ArrayList<String>();
-    private ArrayList<String> watchedMovies = new ArrayList<String>();
-    private ArrayList<String> likedMovies = new ArrayList<String>();
-    private ArrayList<String> ratedMovies = new ArrayList<String>();
     private int numFreePremiumMovies = 15;
+
+    private ArrayList<Movie> currentMoviesList = new ArrayList<Movie>();
+    private ArrayList<Movie> purchasedMovies = new ArrayList<Movie>();
+    private ArrayList<Movie> watchedMovies = new ArrayList<Movie>();
+    private ArrayList<Movie> likedMovies = new ArrayList<Movie>();
+    private ArrayList<Movie> ratedMovies = new ArrayList<Movie>();
 
     /**
      * for coding style
@@ -27,6 +29,34 @@ public class User {
         this.accountType = accountType;
         this.country = country;
         this.balance = balance;
+    }
+
+    /**
+     *
+     * @param nameOut gets the name to check if the movie was purchased
+     * @return true if the movie was purchased
+     */
+    public boolean checkPurchase(final String nameOut) {
+        for (Movie movie : this.purchasedMovies) {
+            if (Objects.equals(movie.getName(), nameOut)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param nameOut gets the name to check if the movie was watched
+     * @return true if the movie was watched
+     */
+    public boolean checkWatch(final String nameOut) {
+        for (Movie movie : this.watchedMovies) {
+            if (Objects.equals(movie.getName(), nameOut)) {
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * for coding style
@@ -44,62 +74,62 @@ public class User {
     /**
      * for coding style
      */
-    public ArrayList<String> getPurchasedMovies() {
+    public ArrayList<Movie> getPurchasedMovies() {
         return purchasedMovies;
     }
     /**
      * for coding style
      */
-    public void setPurchasedMovies(final ArrayList<String> purchasedMovies) {
+    public void setPurchasedMovies(final ArrayList<Movie> purchasedMovies) {
         this.purchasedMovies = purchasedMovies;
     }
     /**
      * for coding style
      */
-    public ArrayList<String> getWatchedMovies() {
+    public ArrayList<Movie> getWatchedMovies() {
         return watchedMovies;
     }
     /**
      * for coding style
      */
-    public void setWatchedMovies(final ArrayList<String> watchedMovies) {
+    public void setWatchedMovies(final ArrayList<Movie> watchedMovies) {
         this.watchedMovies = watchedMovies;
     }
     /**
      * for coding style
      */
-    public ArrayList<String> getLikedMovies() {
+    public ArrayList<Movie> getLikedMovies() {
         return likedMovies;
     }
     /**
      * for coding style
      */
-    public void setLikedMovies(final ArrayList<String> likedMovies) {
+    public void setLikedMovies(final ArrayList<Movie> likedMovies) {
         this.likedMovies = likedMovies;
     }
     /**
      * for coding style
      */
-    public ArrayList<String> getRatedMovies() {
+    public ArrayList<Movie> getRatedMovies() {
         return ratedMovies;
     }
     /**
      * for coding style
      */
-    public void setRatedMovies(final ArrayList<String> ratedMovies) {
+    public void setRatedMovies(final ArrayList<Movie> ratedMovies) {
         this.ratedMovies = ratedMovies;
     }
 
     /**
      * for coding style
      */
-    public ArrayList<String> getCurrentMoviesList() {
+    public ArrayList<Movie> getCurrentMoviesList() {
         return currentMoviesList;
     }
     /**
      * for coding style
      */
-    public void setCurrentMoviesList(final ArrayList<String> currentMoviesList) {
+    public void setCurrentMoviesList(final ArrayList<Movie> currentMoviesList) {
         this.currentMoviesList = currentMoviesList;
     }
 

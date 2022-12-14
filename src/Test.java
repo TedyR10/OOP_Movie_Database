@@ -149,7 +149,7 @@ public final class Test {
 
             runTest(testFileName, config, future);
             ++i;
-            if (i == 7)
+            if (i == 1)
                 break;
         }
 
