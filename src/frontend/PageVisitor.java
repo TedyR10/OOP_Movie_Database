@@ -1,10 +1,11 @@
 package frontend;
 
-import backend.User;
 import backend.Filters;
+import backend.MagicNumbers;
 import backend.Movie;
 import backend.MoviesDatabase;
 import backend.Search;
+import backend.User;
 import backend.UsersDatabase;
 
 
@@ -71,12 +72,14 @@ public class PageVisitor implements Visitor {
                     logoutPage.accept(visitor, action, session,
                             usersDatabase, moviesDatabase, output);
                 } else if (Objects.equals(action.getPage(), "movies")) {
+                    moviesDatabase.getMoviesUser(session.getCurrentUser());
                     System.out.println("changed to movies");
                     session.setCurrentPage("movies");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
                             session.getCurrentMovie());
+
                     output.add(outputGenerator.outputCreator().deepCopy());
                 } else if (Objects.equals(action.getPage(), "upgrades")) {
                     System.out.println("changed to upgrades");
@@ -124,6 +127,24 @@ public class PageVisitor implements Visitor {
                     LogoutPage logoutPage = new LogoutPage();
                     logoutPage.accept(visitor, action, session,
                             usersDatabase, moviesDatabase, output);
+                } else if (Objects.equals(action.getPage(), "movies")) {
+                    moviesDatabase.getMoviesUser(session.getCurrentUser());
+                    System.out.println("changed to movies");
+                    session.setCurrentPage("movies");
+                    OutputGenerator outputGenerator = new OutputGenerator("Movies",
+                            session.getCurrentUser(),
+                            session.getCurrentUser().getCurrentMoviesList(),
+                            session.getCurrentMovie());
+
+                    output.add(outputGenerator.outputCreator().deepCopy());
+                } else {
+                    System.out.println("Eroare");
+                    OutputGenerator outputGenerator = new OutputGenerator("General",
+                            session.getCurrentUser(),
+                            session.getCurrentUser().getCurrentMoviesList(),
+                            session.getCurrentMovie());
+
+                    output.add(outputGenerator.outputCreator().deepCopy());
                 }
             } else if (Objects.equals(session.getCurrentPage(),
                     "upgrades")) {
@@ -135,23 +156,47 @@ public class PageVisitor implements Visitor {
                             usersDatabase, moviesDatabase, output);
                 } else if (Objects.equals(action.getPage(), "movies")) {
                     System.out.println("changed to movies");
+                    moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentPage("movies");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
                             session.getCurrentMovie());
                     output.add(outputGenerator.outputCreator().deepCopy());
+                } else {
+                    System.out.println("Eroare");
+                    OutputGenerator outputGenerator = new OutputGenerator("General",
+                            session.getCurrentUser(),
+                            session.getCurrentUser().getCurrentMoviesList(),
+                            session.getCurrentMovie());
+
+                    output.add(outputGenerator.outputCreator().deepCopy());
                 }
             } else if (Objects.equals(session.getCurrentPage(),
                     "see details")) {
                 if (Objects.equals(action.getPage(), "movies")) {
                     System.out.println("changed to movies");
+                    moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentMovie(null);
                     session.setCurrentPage("movies");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
                             session.getCurrentMovie());
+                    output.add(outputGenerator.outputCreator().deepCopy());
+                } else if (Objects.equals(action.getPage(), "logout")) {
+
+                    PageVisitor visitor = new PageVisitor();
+                    LogoutPage logoutPage = new LogoutPage();
+                    logoutPage.accept(visitor, action, session,
+                            usersDatabase, moviesDatabase, output);
+                } else {
+                    System.out.println("Eroare");
+                    OutputGenerator outputGenerator = new OutputGenerator("General",
+                            session.getCurrentUser(),
+                            session.getCurrentUser().getCurrentMoviesList(),
+                            session.getCurrentMovie());
+
                     output.add(outputGenerator.outputCreator().deepCopy());
                 }
             }
@@ -258,9 +303,12 @@ public class PageVisitor implements Visitor {
                     System.out.println("Foame mare, n-avem bani de tokeni");
                 }
             } else if (Objects.equals(action.getFeature(), "buy premium account")) {
-                if (session.getCurrentUser().getTokens() >= 10) {
+                if (session.getCurrentUser().getTokens()
+                        >= MagicNumbers.MIN_TOKENS_PREMIUM_ACCOUNT) {
                     System.out.println("Buying premium acc");
-                    session.getCurrentUser().setTokens(session.getCurrentUser().getTokens() - 10);
+                    session.getCurrentUser().setTokens(
+                            session.getCurrentUser().getTokens()
+                                    - MagicNumbers.MIN_TOKENS_PREMIUM_ACCOUNT);
                     session.getCurrentUser().setAccountType("premium");
                 } else {
                     System.out.println("Foame mare, n-avem bani de cont premium");
@@ -362,10 +410,15 @@ public class PageVisitor implements Visitor {
                 }
             } else if (Objects.equals(action.getFeature(), "rate")) {
                 if (session.getCurrentUser().checkWatch(
-                        session.getCurrentMovie().getName())) {
+                        session.getCurrentMovie().getName())
+                        && Integer.parseInt(action.getRate()) <= MagicNumbers.MAX_RATING) {
                     System.out.println("Rate");
-                    session.getCurrentMovie().setNumLikes(
-                            session.getCurrentMovie().getNumLikes() + 1);
+                    session.getCurrentMovie().setNumRatings(
+                            session.getCurrentMovie().getNumRatings() + 1);
+                    session.getCurrentMovie().getRatings().add(
+                            session.getCurrentMovie().getRatings().size(),
+                            Integer.parseInt(action.getRate()));
+                    session.getCurrentMovie().setNewRating();
                     session.getCurrentUser().getRatedMovies()
                             .add(session.getCurrentMovie());
                     OutputGenerator outputGenerator =

@@ -11,7 +11,7 @@ public class User {
     private final String country;
     private int balance;
     private int tokens = 0;
-    private int numFreePremiumMovies = 15;
+    private int numFreePremiumMovies = MagicNumbers.FREE_PREMIUM_MOVIES;
 
     private ArrayList<Movie> currentMoviesList = new ArrayList<Movie>();
     private ArrayList<Movie> purchasedMovies = new ArrayList<Movie>();

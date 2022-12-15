@@ -12,6 +12,7 @@ public class Movie {
     private int numLikes;
     private double rating;
     private int numRatings;
+    private ArrayList<Integer> ratings = new ArrayList<Integer>();
 
     public Movie(final String name, final int year, final int duration,
                  final ArrayList<String> genres, final ArrayList<String> actors,
@@ -22,6 +23,30 @@ public class Movie {
         this.genres = genres;
         this.actors = actors;
         this.countriesBanned = countriesBanned;
+    }
+
+    /**
+     * calculates the updated rating for a movie after a new rating
+     */
+    public void setNewRating() {
+        Integer sum = 0;
+        for (Integer rate : this.ratings) {
+            sum += rate;
+        }
+        this.rating = (double) (sum / this.numRatings);
+    }
+
+    /**
+     * for coding style
+     */
+    public ArrayList<Integer> getRatings() {
+        return ratings;
+    }
+    /**
+     * for coding style
+     */
+    public void setRatings(final ArrayList<Integer> ratings) {
+        this.ratings = ratings;
     }
     /**
      * for coding style

@@ -3,6 +3,7 @@ package frontend;
 import backend.Movie;
 import backend.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
@@ -11,6 +12,52 @@ abstract class Output {
     public abstract ObjectNode generateOutput(ObjectMapper objectMapper,
                                               ObjectNode node, User user, ArrayList<Movie> movies,
                                               Movie movie);
+    public ObjectNode convertMovie(final ObjectMapper objectMapper, final ObjectNode node,
+                                   final User user,
+                                   final ArrayList<Movie> movies, final Movie movieIn) {
+        Movie movieOut = new Movie(movieIn.getName(), movieIn.getYear(), movieIn.getDuration(),
+                movieIn.getGenres(), movieIn.getActors(), movieIn.getCountriesBanned());
+        movieOut.setNumRatings(movieIn.getNumRatings());
+        movieOut.setRating(movieIn.getRating());
+        movieOut.setNumLikes(movieIn.getNumLikes());
+        ObjectNode out = objectMapper.createObjectNode();
+        out.put("name", movieOut.getName());
+        out.put("year", movieOut.getYear());
+        out.put("duration", movieOut.getDuration());
+        out.putPOJO("genres", movieOut.getGenres());
+        out.putPOJO("actors", movieOut.getActors());
+        out.putPOJO("countriesBanned", movieOut.getCountriesBanned());
+        out.put("numLikes", movieOut.getNumLikes());
+        out.put("rating", movieOut.getRating());
+        out.put("numRatings", movieOut.getNumRatings());
+        return out;
+    }
+
+    public ArrayNode convertMovies(final ObjectMapper objectMapper, final ObjectNode node,
+                                    final User user,
+                                    final ArrayList<Movie> movies, final Movie movie) {
+        ArrayNode moviesOut = objectMapper.createArrayNode();
+        for (Movie movieIn : movies) {
+            Movie movieOut = new Movie(movieIn.getName(), movieIn.getYear(), movieIn.getDuration(),
+                    movieIn.getGenres(), movieIn.getActors(), movieIn.getCountriesBanned());
+            movieOut.setNumRatings(movieIn.getNumRatings());
+            movieOut.setRating(movieIn.getRating());
+            movieOut.setNumLikes(movieIn.getNumLikes());
+            ObjectNode out = objectMapper.createObjectNode();
+            out.put("name", movieOut.getName());
+            out.put("year", movieOut.getYear());
+            out.put("duration", movieOut.getDuration());
+            out.putPOJO("genres", movieOut.getGenres());
+            out.putPOJO("actors", movieOut.getActors());
+            out.putPOJO("countriesBanned", movieOut.getCountriesBanned());
+            out.put("numLikes", movieOut.getNumLikes());
+            out.put("rating", movieOut.getRating());
+            out.put("numRatings", movieOut.getNumRatings());
+            moviesOut.add(out.deepCopy());
+        }
+        return moviesOut;
+
+    }
 
     public ObjectNode userCreator(final ObjectMapper objectMapper, final ObjectNode node,
                                   final User user,
@@ -26,17 +73,19 @@ abstract class Output {
         userOut.set("credentials", credentials);
         userOut.put("tokensCount", user.getTokens());
         userOut.put("numFreePremiumMovies", user.getNumFreePremiumMovies());
-        userOut.putPOJO("purchasedMovies", user.getPurchasedMovies());
-        userOut.putPOJO("watchedMovies", user.getWatchedMovies());
-        userOut.putPOJO("likedMovies", user.getLikedMovies());
-        userOut.putPOJO("ratedMovies", user.getRatedMovies());
+        ArrayNode purchasedMovies = convertMovies(
+                objectMapper, node, user, user.getPurchasedMovies(), movie);
+        userOut.set("purchasedMovies", purchasedMovies);
+        ArrayNode watchedMovies = convertMovies(
+                objectMapper, node, user, user.getWatchedMovies(), movie);
+        userOut.set("watchedMovies", watchedMovies);
+        ArrayNode likedMovies = convertMovies(
+                objectMapper, node, user, user.getLikedMovies(), movie);
+        userOut.set("likedMovies", likedMovies);
+        ArrayNode ratedMovies = convertMovies(
+                objectMapper, node, user, user.getRatedMovies(), movie);
+        userOut.set("ratedMovies", ratedMovies);
         return userOut.deepCopy();
-    }
-
-    public ObjectNode movieCreator(final ObjectMapper objectMapper, final ObjectNode node,
-                                   final User user,
-                                   final ArrayList<Movie> movies, final Movie movie) {
-        return node;
     }
 }
 class GeneralOutput extends Output {
@@ -72,7 +121,8 @@ class Movies extends Output {
                                      final ObjectNode node, final User user,
                                      final ArrayList<Movie> movies, final Movie movie) {
         node.putNull("error");
-        node.putPOJO("currentMoviesList", movies);
+        ArrayNode moviesOut = convertMovies(objectMapper, node, user, movies, movie);
+        node.set("currentMoviesList", moviesOut);
         ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
         node.set("currentUser", userOut);
         return node.deepCopy();
@@ -86,7 +136,9 @@ class Details extends Output {
                                      final ObjectNode node, final User user,
                                      final ArrayList<Movie> movies, final Movie movie) {
         node.putNull("error");
-        node.putPOJO("currentMoviesList", movie);
+        ArrayNode moviesOut = objectMapper.createArrayNode();
+        moviesOut.add(convertMovie(objectMapper, node, user, movies, movie));
+        node.set("currentMoviesList", moviesOut);
         ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
         node.set("currentUser", userOut);
         return node.deepCopy();

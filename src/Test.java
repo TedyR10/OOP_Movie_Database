@@ -138,7 +138,6 @@ public final class Test {
         totalScore = config.getCheckstyleScore();
         int manualScore = config.getReadmeScore() + config.getHomeworkDesignScore();
 
-        int i = 0;
         for (final File testFile : Objects.requireNonNull(TEST_INPUTS_FILE.listFiles())) {
             String testFileName = testFile.getName();
 
@@ -148,9 +147,6 @@ public final class Test {
             final Future<Object> future = createTimerTask(testArgv);
 
             runTest(testFileName, config, future);
-            ++i;
-            if (i == 1)
-                break;
         }
 
         score += Checkstyle.testCheckstyle();
@@ -223,7 +219,7 @@ public final class Test {
     }
 
     private static void preTestCleanUp() {
-        //TEST_OUT_FILE.delete();
+        TEST_OUT_FILE.delete();
     }
 
     private static void printMessage(

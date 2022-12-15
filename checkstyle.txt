@@ -1,8 +1,5 @@
 Starting audit...
-[ERROR] /home/student/Desktop/POOTV/./src/backend/User.java:14:40: '15' is a magic number. [MagicNumber]
-[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:176:5: Method length is 215 lines (max allowed is 150). [MethodLength]
-[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:261:61: '10' is a magic number. [MagicNumber]
-[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:263:95: '10' is a magic number. [MagicNumber]
-[ERROR] /home/student/Desktop/POOTV/./src/Test.java:152:13: 'if' construct must use '{}'s. [NeedBraces]
+[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:38:5: Method length is 164 lines (max allowed is 150). [MethodLength]
+[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:221:5: Method length is 223 lines (max allowed is 150). [MethodLength]
 Audit done.
-Checkstyle ends with 5 errors.
+Checkstyle ends with 2 errors.

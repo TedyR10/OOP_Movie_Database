@@ -37,7 +37,7 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
 
         for (ActionsInput action : input.getActions()) {
-
+//
             System.out.println();
             System.out.println("Pagina curenta: " + session.getCurrentPage());
             System.out.println("Comanda: " + action.getType() + " " + action.getPage());

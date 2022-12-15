@@ -16,12 +16,22 @@ public class Filters {
     public ArrayList<Movie> filter(final ArrayList<Movie> movies, final ActionsInput actionsInput) {
         ArrayList<Movie> filteredMovies = new ArrayList<Movie>();
         if (actionsInput.getFilters().getContains() != null) {
-            if (actionsInput.getFilters().getContains().getActors() != null) {
+            if (actionsInput.getFilters().getContains().getActors() != null
+                    && actionsInput.getFilters().getContains().getGenre() != null) {
+                int actorsFilter = actionsInput.getFilters().getContains().getActors().size();
+                ArrayList<Movie> actorsFiltered = new ArrayList<Movie>();
+                actorsFiltered = filterContainsActors(movies,
+                        actionsInput.getFilters().getContains().getActors(), actorsFilter);
+                int genresFilter = actionsInput.getFilters().getContains().getGenre().size();
+                filteredMovies = filterContainsGenre(actorsFiltered,
+                        actionsInput.getFilters().getContains().getGenre(), genresFilter);
+            } else if (actionsInput.getFilters().getContains().getActors() != null
+                    && actionsInput.getFilters().getContains().getGenre() == null) {
                 int actorsFilter = actionsInput.getFilters().getContains().getActors().size();
                 filteredMovies = filterContainsActors(movies,
                         actionsInput.getFilters().getContains().getActors(), actorsFilter);
-            }
-            if (actionsInput.getFilters().getContains().getGenre() != null) {
+            } else if (actionsInput.getFilters().getContains().getGenre() != null
+                    && actionsInput.getFilters().getContains().getActors() == null) {
                 int genresFilter = actionsInput.getFilters().getContains().getGenre().size();
                 filteredMovies = filterContainsGenre(movies,
                         actionsInput.getFilters().getContains().getGenre(), genresFilter);
@@ -45,50 +55,87 @@ public class Filters {
     public ArrayList<Movie> sortMovies(final ArrayList<Movie> movies,
                                         final String ratingSort, final String durationSort) {
 
-        if (Objects.equals(ratingSort, "decreasing")
-                || Objects.equals(durationSort, "decreasing")) {
+        if (ratingSort != null && durationSort == null) {
+            System.out.println("by rating");
             movies.sort(new Comparator<Movie>() {
                 @Override
                 public int compare(final Movie o1, final Movie o2) {
-                    if (o1.getRating() == o2.getRating()) {
-                        if (o1.getDuration() == o2.getDuration()) {
-                            return 0;
-                        } else if (o1.getDuration() < o2.getDuration()) {
+                    if (o1.getRating() == 0 && o2.getRating() == 0) {
+                        return 0;
+                    } else if (o1.getRating() == 0) {
+                        if (Objects.equals(ratingSort, "decreasing")) {
                             return 1;
                         } else {
                             return -1;
                         }
+                    } else if (o2.getRating() == 0) {
+                        if (Objects.equals(ratingSort, "decreasing")) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    } else if (o1.getRating() == o2.getRating()) {
+                        return 0;
                     } else if (o1.getRating() < o2.getRating()) {
-                        return 1;
+                        if (Objects.equals(ratingSort, "decreasing")) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
                     } else {
-                        return -1;
+                        if (Objects.equals(ratingSort, "decreasing")) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
                     }
                 }
             });
             return movies;
-        } else if (Objects.equals(ratingSort, "increasing")
-                || Objects.equals(durationSort, "increasing")) {
+        } else if (durationSort != null) {
+            System.out.println("by duration");
             movies.sort(new Comparator<Movie>() {
                 @Override
                 public int compare(final Movie o1, final Movie o2) {
-                    if (o1.getRating() == o2.getRating()) {
-                        if (o1.getDuration() == o2.getDuration()) {
+                    if (o1.getDuration() == o2.getDuration()) {
+                        if (o1.getRating() == 0 && o2.getRating() == 0) {
                             return 0;
-                        } else if (o1.getDuration() < o2.getDuration()) {
+                        } else if (o1.getRating() == 0) {
+                            return 1;
+                        } else if (o2.getRating() == 0) {
+                            return -1;
+                        } else if (o1.getRating() == o2.getRating()) {
+                            return 0;
+                        } else if (o1.getRating() < o2.getRating()) {
+                            if (Objects.equals(ratingSort, "decreasing")) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        } else {
+                            if (Objects.equals(ratingSort, "decreasing")) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        }
+                    } else if (o1.getDuration() < o2.getDuration()) {
+                        if (Objects.equals(durationSort, "decreasing")) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else {
+                        if (Objects.equals(durationSort, "decreasing")) {
                             return -1;
                         } else {
                             return 1;
                         }
-                    } else if (o1.getRating() < o2.getRating()) {
-                        return -1;
-                    } else {
-                        return 1;
                     }
                 }
             });
             return movies;
         }
-
         return movies;
     }
 
