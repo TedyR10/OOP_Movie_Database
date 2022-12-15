@@ -3,6 +3,9 @@ package backend;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This class represents a user in the database
+ */
 public class User {
 
     private final String name;
@@ -12,7 +15,6 @@ public class User {
     private int balance;
     private int tokens = 0;
     private int numFreePremiumMovies = MagicNumbers.FREE_PREMIUM_MOVIES;
-
     private ArrayList<Movie> currentMoviesList = new ArrayList<Movie>();
     private ArrayList<Movie> purchasedMovies = new ArrayList<Movie>();
     private ArrayList<Movie> watchedMovies = new ArrayList<Movie>();
@@ -20,7 +22,12 @@ public class User {
     private ArrayList<Movie> ratedMovies = new ArrayList<Movie>();
 
     /**
-     * for coding style
+     * Constructor for user, initializing mandatory fields
+     * @param name name
+     * @param password password
+     * @param accountType accountType
+     * @param country country
+     * @param balance balance
      */
     public User(final String name, final String password, final String accountType,
                 final String country, final int balance) {
@@ -32,7 +39,7 @@ public class User {
     }
 
     /**
-     *
+     * checks if the user has purchsed a particular movie
      * @param nameOut gets the name to check if the movie was purchased
      * @return true if the movie was purchased
      */
@@ -46,7 +53,7 @@ public class User {
     }
 
     /**
-     *
+     * checks if the user has watched a particular movie
      * @param nameOut gets the name to check if the movie was watched
      * @return true if the movie was watched
      */

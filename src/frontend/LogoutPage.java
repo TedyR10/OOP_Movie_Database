@@ -8,12 +8,15 @@ import session.Session;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used when logging out
+ */
 public class LogoutPage implements Visitable {
 
     public LogoutPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

@@ -2,6 +2,9 @@ package backend;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a movie in the database
+ */
 public class Movie {
     private String name;
     private int year;
@@ -10,10 +13,21 @@ public class Movie {
     private ArrayList<String> actors;
     private ArrayList<String> countriesBanned;
     private int numLikes;
-    private double rating;
+    private double rating = 0.00;
     private int numRatings;
+
+    // We'll store all the ratings given by users to calculate the new rating
     private ArrayList<Integer> ratings = new ArrayList<Integer>();
 
+    /**
+     * Constructor for movie, initializes mandatory fields
+     * @param name name
+     * @param year year
+     * @param duration duration
+     * @param genres genres
+     * @param actors actors
+     * @param countriesBanned countries banned
+     */
     public Movie(final String name, final int year, final int duration,
                  final ArrayList<String> genres, final ArrayList<String> actors,
                  final ArrayList<String> countriesBanned) {
@@ -26,7 +40,7 @@ public class Movie {
     }
 
     /**
-     * calculates the updated rating for a movie after a new rating
+     * This method sets the updated rating for a movie after a new rating
      */
     public void setNewRating() {
         Integer sum = 0;

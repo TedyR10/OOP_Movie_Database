@@ -1,6 +1,8 @@
 package input;
 
-
+/**
+ * This class is used for getting the inputs from files
+ */
 public final class ActionsInput {
     private String type;
     private String page;

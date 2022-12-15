@@ -8,12 +8,15 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used when using the login page
+ */
 public class LoginPage implements Visitable {
 
     public LoginPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

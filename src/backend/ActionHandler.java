@@ -11,21 +11,30 @@ import singleton.UsersDatabase;
 
 import java.util.Objects;
 
+/**
+ * This class handles actions and can be easily extended in part 2
+ */
 public final class ActionHandler {
+
     /**
-     *
-     * @param action action type
+     * This method handles actions & calls the pageVisitor
+     * @param action action
+     * @param session current session information
+     * @param usersDatabase users database
+     * @param moviesDatabase movies database
+     * @param output arraynode output
      */
     public void handle(final ActionsInput action, final Session session,
                        final UsersDatabase usersDatabase, final MoviesDatabase moviesDatabase,
                        final ArrayNode output) {
-        PageVisitor visitor = new PageVisitor();
         if (Objects.equals(action.getType(), "change page")) {
             ChangePage changePage = new ChangePage();
-            changePage.accept(visitor, action, session, usersDatabase, moviesDatabase, output);
+            changePage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
         } else if (Objects.equals(action.getType(), "on page")) {
             OnPage onPage = new OnPage();
-            onPage.accept(visitor, action, session, usersDatabase, moviesDatabase, output);
+            onPage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
         }
     }
 }

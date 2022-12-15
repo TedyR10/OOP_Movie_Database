@@ -2,6 +2,9 @@ package input;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used for getting the inputs from files
+ */
 public final class FiltersInput {
     private Sort sort;
     private Contains contains;

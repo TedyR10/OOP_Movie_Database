@@ -1,6 +1,10 @@
 package input;
 
 import java.util.ArrayList;
+
+/**
+ * This class is used for getting the inputs from files
+ */
 public final class InputData {
     private ArrayList<UserInput> users;
     private ArrayList<MovieInput> movies;

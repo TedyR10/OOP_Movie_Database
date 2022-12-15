@@ -8,12 +8,15 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used for actions in Upgrades page
+ */
 public class UpgradesPage implements Visitable {
 
     public UpgradesPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

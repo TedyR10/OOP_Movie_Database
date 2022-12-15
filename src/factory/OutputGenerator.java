@@ -8,10 +8,32 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 
+/**
+ * This class acts as an extended Factory implementation for output
+ */
 abstract class Output {
+    /**
+     * This method generates the output
+     * @param objectMapper objectMapper
+     * @param node node
+     * @param user user
+     * @param movies movies
+     * @param movie movie
+     * @return output
+     */
     public abstract ObjectNode generateOutput(ObjectMapper objectMapper,
                                               ObjectNode node, User user, ArrayList<Movie> movies,
                                               Movie movie);
+
+    /**
+     * This method makes a deep copy of a movie and returns the ObjectNode out
+     * @param objectMapper objectMapper
+     * @param node node
+     * @param user user
+     * @param movies movies
+     * @param movieIn movie to be converted
+     * @return converted movie into ObjectNode out
+     */
     public ObjectNode convertMovie(final ObjectMapper objectMapper, final ObjectNode node,
                                    final User user,
                                    final ArrayList<Movie> movies, final Movie movieIn) {
@@ -33,6 +55,15 @@ abstract class Output {
         return out;
     }
 
+    /**
+     * This method makes a deep copy of an entire arraylist
+     * @param objectMapper objectMapper
+     * @param node node
+     * @param user user
+     * @param movies movies
+     * @param movie movie
+     * @return converted movies into ArrayNode moviesOut
+     */
     public ArrayNode convertMovies(final ObjectMapper objectMapper, final ObjectNode node,
                                     final User user,
                                     final ArrayList<Movie> movies, final Movie movie) {
@@ -59,6 +90,15 @@ abstract class Output {
 
     }
 
+    /**
+     * This method makes a deep copy of a user
+     * @param objectMapper objectMapper
+     * @param node node
+     * @param user user
+     * @param movies movies
+     * @param movie movie
+     * @return converted user into ObjectNode userOut
+     */
     public ObjectNode userCreator(final ObjectMapper objectMapper, final ObjectNode node,
                                   final User user,
                                   final ArrayList<Movie> movies, final Movie movie) {
@@ -88,6 +128,10 @@ abstract class Output {
         return userOut.deepCopy();
     }
 }
+
+/**
+ * Factory class for general output
+ */
 class GeneralOutput extends Output {
     @Override
     public ObjectNode generateOutput(final ObjectMapper objectMapper,
@@ -100,6 +144,10 @@ class GeneralOutput extends Output {
         return node.deepCopy();
     }
 }
+
+/**
+ * Factory class for user output
+ */
 class UserOutput extends Output {
 
     @Override
@@ -114,6 +162,10 @@ class UserOutput extends Output {
         return node.deepCopy();
     }
 }
+
+/**
+ * Factory class for movies output
+ */
 class Movies extends Output {
 
     @Override
@@ -129,6 +181,9 @@ class Movies extends Output {
     }
 }
 
+/**
+ * Factory class for SeeDetails output
+ */
 class Details extends Output {
 
     @Override
@@ -145,6 +200,9 @@ class Details extends Output {
     }
 }
 
+/**
+ * This class is the main factory for the outputs
+ */
 final class OutputFactory {
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static ObjectNode node = objectMapper.createObjectNode();
@@ -171,6 +229,9 @@ final class OutputFactory {
     }
 }
 
+/**
+ * This class gets the necessary output type from the visitors and starts the factory
+ */
 public class OutputGenerator {
 
     private String outputType;
@@ -178,6 +239,13 @@ public class OutputGenerator {
     private ArrayList<Movie> movies;
     private Movie movie;
 
+    /**
+     * Output constructor, initializes the fields
+     * @param type type of output needed
+     * @param outUser user
+     * @param outMovies movies
+     * @param outMovie movie
+     */
     public OutputGenerator(final String type, final User outUser,
                            final ArrayList<Movie> outMovies, final Movie outMovie) {
         this.outputType = type;
@@ -187,7 +255,7 @@ public class OutputGenerator {
     }
 
     /**
-     *
+     * This method calls the factory and returns the correct output
      * @return node output
      */
     public ObjectNode outputCreator() {

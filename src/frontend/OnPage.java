@@ -8,12 +8,15 @@ import session.Session;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used for onPage actions
+ */
 public class OnPage implements Visitable {
 
     public OnPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     public void accept(final PageVisitor v, final ActionsInput action,
                        final Session session, final UsersDatabase usersDatabase,

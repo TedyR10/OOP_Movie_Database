@@ -8,11 +8,14 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used for actions on the register page
+ */
 public class RegisterPage implements Visitable {
     public RegisterPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

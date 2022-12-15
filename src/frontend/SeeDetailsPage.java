@@ -8,13 +8,16 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used for actions in SeeDetails page
+ */
 public class SeeDetailsPage implements Visitable {
 
     public SeeDetailsPage() {
     }
 
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

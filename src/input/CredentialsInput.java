@@ -1,5 +1,8 @@
 package input;
 
+/**
+ * This class is used for getting the inputs from files
+ */
 public final class CredentialsInput {
     private String name;
     private String password;

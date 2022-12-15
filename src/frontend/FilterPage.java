@@ -8,12 +8,15 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used for filtering pages
+ */
 public class FilterPage implements Visitable {
 
     public FilterPage() {
     }
     /**
-     * for coding style
+     * Visitor accept method
      */
     @Override
     public void accept(final PageVisitor v, final ActionsInput action,

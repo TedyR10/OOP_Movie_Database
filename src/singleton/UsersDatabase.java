@@ -7,6 +7,9 @@ import input.UserInput;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This class represents the users database
+ */
 public final class UsersDatabase {
 
     private static UsersDatabase instance = null;
@@ -16,7 +19,7 @@ public final class UsersDatabase {
 
     }
     /**
-     *
+     * This method is used for the singleton implementation
      * @return lazy singleton implementation
      */
     public static UsersDatabase getInstance() {
@@ -31,9 +34,10 @@ public final class UsersDatabase {
     }
 
     /**
-     *
-     * @param userInput gets the users from input and adds them into the database
-     * @param moviesDatabase adds the available movies for each user
+     * This method gets the users from input and puts them inside our database
+     * along with their available movies
+     * @param userInput users
+     * @param moviesDatabase moviesDatabase
      */
     public void setUsers(final ArrayList<UserInput> userInput,
                          final MoviesDatabase moviesDatabase) {
@@ -59,9 +63,9 @@ public final class UsersDatabase {
     }
 
     /**
-     *
-     * @param user get a user
-     * @return check if he is in the database or not
+     * This method checks if a user is in the database
+     * @param user user
+     * @return true if the credentials given match a user in the database
      */
     public boolean checkUser(final User user) {
         for (int i = 0; i < users.size(); i++) {
@@ -74,9 +78,9 @@ public final class UsersDatabase {
     }
 
     /**
-     *
-     * @param user gets a user
-     * @return returns the credentials from the database
+     * This method returns a user from the database
+     * @param user user
+     * @return user
      */
     public User getUser(final User user) {
         for (int i = 0; i < users.size(); i++) {
@@ -89,8 +93,8 @@ public final class UsersDatabase {
     }
 
     /**
-     *
-     * @param user adds the new user to the database
+     * This method adds a new user in the database
+     * @param user user
      */
     public void addUser(final User user, final MoviesDatabase moviesDatabase) {
         this.users.add(this.users.size(), new User(user.getName(),
@@ -112,7 +116,7 @@ public final class UsersDatabase {
     }
 
     /**
-     * clears the database for the next test
+     * This method clears the database for the next test
      */
     public void clearDatabase() {
         this.users.clear();

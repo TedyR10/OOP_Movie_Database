@@ -7,6 +7,9 @@ import input.MovieInput;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * This class represents the movies database and will probably be of use in part 2
+ */
 public final class MoviesDatabase {
 
     private static MoviesDatabase instance = null;
@@ -17,8 +20,8 @@ public final class MoviesDatabase {
 
     }
     /**
-     *
-     * @return lazy singleton implementation
+     * This method is used for the singleton implementation
+     * @return instance
      */
     public static MoviesDatabase getInstance() {
         if (instance == null) {
@@ -32,8 +35,8 @@ public final class MoviesDatabase {
     }
 
     /**
-     *
-     * @param moviesInput gets the movies from input and adds them into the database
+     * This method gets the movies from input and puts them inside our database
+     * @param moviesInput moviesInput
      */
     public void setMovies(final ArrayList<MovieInput> moviesInput) {
         for (int i = 0; i < moviesInput.size(); i++) {
@@ -45,15 +48,15 @@ public final class MoviesDatabase {
     }
 
     /**
-     * clears the database for the next test
+     * This method clears the database for the next test
      */
     public void clearDatabase() {
         this.movies.clear();
     }
 
     /**
-     *
-     * @param user reassigns the correct movies to a user
+     * This method return the available movies for a specific user
+     * @param user user
      */
     public void getMoviesUser(final User user) {
         user.getCurrentMoviesList().clear();
@@ -72,7 +75,7 @@ public final class MoviesDatabase {
     }
 
     /**
-     *
+     * This method returns a movie from the database
      * @param name name of the movie
      * @return movie
      */
@@ -86,7 +89,7 @@ public final class MoviesDatabase {
     }
 
     /**
-     *
+     * This method checks if a movie is in the database
      * @param name name of the movie
      * @return true if the movie exists
      */

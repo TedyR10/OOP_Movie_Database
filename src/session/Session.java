@@ -3,6 +3,9 @@ package session;
 import backend.Movie;
 import backend.User;
 
+/**
+ * This class represents the current session
+ */
 public class Session {
     private boolean login;
     private String currentPage;
@@ -10,7 +13,7 @@ public class Session {
     private Movie currentMovie;
 
     /**
-     * for coding style
+     * Initializes the current session fields
      */
     public Session() {
         this.login = false;
