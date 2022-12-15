@@ -1,4 +1,4 @@
-package frontend;
+package factory;
 
 import backend.Movie;
 import backend.User;

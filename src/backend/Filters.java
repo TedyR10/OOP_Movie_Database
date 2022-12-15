@@ -38,7 +38,6 @@ public class Filters {
             }
         }
         if (actionsInput.getFilters().getSort() != null) {
-            System.out.println("Sorting");
             filteredMovies = sortMovies(movies, actionsInput.getFilters().getSort().getRating(),
                     actionsInput.getFilters().getSort().getDuration());
         }
@@ -56,7 +55,6 @@ public class Filters {
                                         final String ratingSort, final String durationSort) {
 
         if (ratingSort != null && durationSort == null) {
-            System.out.println("by rating");
             movies.sort(new Comparator<Movie>() {
                 @Override
                 public int compare(final Movie o1, final Movie o2) {
@@ -93,7 +91,6 @@ public class Filters {
             });
             return movies;
         } else if (durationSort != null) {
-            System.out.println("by duration");
             movies.sort(new Comparator<Movie>() {
                 @Override
                 public int compare(final Movie o1, final Movie o2) {

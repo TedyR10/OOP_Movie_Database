@@ -3,9 +3,11 @@ package backend;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import frontend.ChangePage;
 import frontend.OnPage;
-import frontend.PageVisitor;
+import visitor.PageVisitor;
 import input.ActionsInput;
 import session.Session;
+import singleton.MoviesDatabase;
+import singleton.UsersDatabase;
 
 import java.util.Objects;
 

@@ -1,5 +1,2 @@
 Starting audit...
-[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:38:5: Method length is 164 lines (max allowed is 150). [MethodLength]
-[ERROR] /home/student/Desktop/POOTV/./src/frontend/PageVisitor.java:221:5: Method length is 223 lines (max allowed is 150). [MethodLength]
 Audit done.
-Checkstyle ends with 2 errors.

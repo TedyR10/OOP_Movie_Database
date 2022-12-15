@@ -1,10 +1,12 @@
 package frontend;
 
-import backend.MoviesDatabase;
-import backend.UsersDatabase;
+import singleton.MoviesDatabase;
+import singleton.UsersDatabase;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import input.ActionsInput;
 import session.Session;
+import visitor.PageVisitor;
+import visitor.Visitable;
 
 public class OnPage implements Visitable {
 

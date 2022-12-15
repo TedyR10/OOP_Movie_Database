@@ -1,5 +1,7 @@
-package backend;
+package singleton;
 
+import backend.Movie;
+import backend.User;
 import input.UserInput;
 
 import java.util.ArrayList;

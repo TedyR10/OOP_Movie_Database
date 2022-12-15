@@ -1,6 +1,6 @@
 import backend.ActionHandler;
-import backend.MoviesDatabase;
-import backend.UsersDatabase;
+import singleton.MoviesDatabase;
+import singleton.UsersDatabase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,12 +37,6 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
 
         for (ActionsInput action : input.getActions()) {
-//
-            System.out.println();
-            System.out.println("Pagina curenta: " + session.getCurrentPage());
-            System.out.println("Comanda: " + action.getType() + " " + action.getPage());
-            System.out.println();
-
             ActionHandler actionHandler = new ActionHandler();
             actionHandler.handle(action, session, usersDatabase, moviesDatabase, output);
         }
