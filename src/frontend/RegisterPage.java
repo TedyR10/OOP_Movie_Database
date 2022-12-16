@@ -9,7 +9,7 @@ import visitor.PageVisitor;
 import visitor.Visitable;
 
 /**
- * This class is used for actions on the register page
+ * This class is used for registering
  */
 public class RegisterPage implements Visitable {
     public RegisterPage() {

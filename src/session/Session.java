@@ -21,6 +21,7 @@ public class Session {
         this.currentUser = null;
         this.currentMovie = null;
     }
+
     /**
      * for coding style
      */

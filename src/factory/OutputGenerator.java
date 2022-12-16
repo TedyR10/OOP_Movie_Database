@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * This class acts as an extended Factory implementation for output
  */
 abstract class Output {
+
     /**
      * This method generates the output
      * @param objectMapper objectMapper
@@ -213,6 +214,15 @@ final class OutputFactory {
     public enum OutputType {
         General, User, Movies, Details
     }
+
+    /**
+     * This method creates the output based on the outputType
+     * @param outputType outputType
+     * @param user user
+     * @param movies movies
+     * @param movie movie
+     * @return output
+     */
     public static ObjectNode createOutput(final OutputType outputType, final User user,
                                           final ArrayList<Movie> movies, final Movie movie) {
         switch (outputType) {

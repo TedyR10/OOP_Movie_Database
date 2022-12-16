@@ -19,6 +19,7 @@ public final class MoviesDatabase {
     private MoviesDatabase() {
 
     }
+
     /**
      * This method is used for the singleton implementation
      * @return instance
@@ -30,6 +31,10 @@ public final class MoviesDatabase {
         return instance;
     }
 
+    /**
+     * This method returns the movies inside the database
+     * @return movies
+     */
     public ArrayList<Movie> getMovies() {
         return movies;
     }
@@ -55,7 +60,7 @@ public final class MoviesDatabase {
     }
 
     /**
-     * This method return the available movies for a specific user
+     * This method returns the available movies for a specific user
      * @param user user
      */
     public void getMoviesUser(final User user) {

@@ -30,11 +30,14 @@ public final class Main {
         File sourceFile = new File(args[0]);
 
         ObjectMapper objectMapper = new ObjectMapper();
+
         // Reads from file
         InputData input = objectMapper.readValue(sourceFile,
                 InputData.class);
+
         // Initialize session
         Session session = new Session();
+
         // Initialize databases
         UsersDatabase usersDatabase = UsersDatabase.getInstance();
         MoviesDatabase moviesDatabase = MoviesDatabase.getInstance();

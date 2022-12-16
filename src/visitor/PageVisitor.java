@@ -1,6 +1,6 @@
 package visitor;
 
-import backend.Filters;
+import strategy.Filters;
 import backend.MagicNumbers;
 import backend.Movie;
 import factory.OutputGenerator;
@@ -30,6 +30,7 @@ import java.util.Objects;
  * This class is used for visiting purposes. Does most of the things
  */
 public class PageVisitor implements Visitor {
+
     /**
      * This method is used for changing pages
      */
@@ -37,11 +38,14 @@ public class PageVisitor implements Visitor {
     public void visit(final ChangePage changePage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Checks if the current session has a user logged in
         if (!session.isLogin()) {
+
             // Checks which page we are currently on
             if (Objects.equals(session.getCurrentPage(),
                     "homepage neautentificat")) {
+
                 // Changes page accordingly from "homepage neautentificat"
                 if (Objects.equals(action.getPage(), "login")) {
                     session.setCurrentPage("login");
@@ -55,9 +59,11 @@ public class PageVisitor implements Visitor {
                 }
             }
         } else {
+
             // Checks which page we are currently on
             if (Objects.equals(session.getCurrentPage(),
                     "homepage autentificat")) {
+
                 // Changes page accordingly from "homepage autentificat"
                 if (Objects.equals(action.getPage(), "logout")) {
                     LogoutPage logoutPage = new LogoutPage();
@@ -70,7 +76,6 @@ public class PageVisitor implements Visitor {
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
                             session.getCurrentMovie());
-
                     output.add(outputGenerator.outputCreator().deepCopy());
                 } else if (Objects.equals(action.getPage(), "upgrades")) {
                     session.setCurrentPage("upgrades");
@@ -82,8 +87,10 @@ public class PageVisitor implements Visitor {
                 }
             } else if (Objects.equals(session.getCurrentPage(),
                     "movies")) {
+
                 // Changes page accordingly from "movies"
                 if (Objects.equals(action.getPage(), "see details")) {
+
                     // Checks if the movie can be accessed
                     boolean found = false;
                     for (Movie movie : session.getCurrentUser().getCurrentMoviesList()) {
@@ -94,14 +101,13 @@ public class PageVisitor implements Visitor {
                                     session.getCurrentUser(),
                                     session.getCurrentUser().getCurrentMoviesList(),
                                     session.getCurrentMovie());
-
                             output.add(outputGenerator.outputCreator().deepCopy());
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        // Display error if the page is not available
+                        // Display error if the movie cannot be accessed
                         ErrorPage errorPage = new ErrorPage();
                         errorPage.accept(new PageVisitor(), action, session,
                                 usersDatabase, moviesDatabase, output);
@@ -117,7 +123,6 @@ public class PageVisitor implements Visitor {
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
                             session.getCurrentMovie());
-
                     output.add(outputGenerator.outputCreator().deepCopy());
                 } else {
                     // Display error if the page is not available
@@ -127,6 +132,7 @@ public class PageVisitor implements Visitor {
                 }
             } else if (Objects.equals(session.getCurrentPage(),
                     "upgrades")) {
+
                 // Changes page accordingly from "upgrades"
                 if (Objects.equals(action.getPage(), "logout")) {
                     LogoutPage logoutPage = new LogoutPage();
@@ -148,6 +154,7 @@ public class PageVisitor implements Visitor {
                 }
             } else if (Objects.equals(session.getCurrentPage(),
                     "see details")) {
+
                 // Changes page accordingly from "see details"
                 if (Objects.equals(action.getPage(), "movies")) {
                     moviesDatabase.getMoviesUser(session.getCurrentUser());
@@ -171,6 +178,7 @@ public class PageVisitor implements Visitor {
             }
         }
     }
+
     /**
      * This method is used for logging out
      */
@@ -183,6 +191,7 @@ public class PageVisitor implements Visitor {
         session.setCurrentUser(null);
         session.setCurrentMovie(null);
     }
+
     /**
      * This method is used for on page actions
      */
@@ -190,6 +199,7 @@ public class PageVisitor implements Visitor {
     public void visit(final OnPage onPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Checks the current page & on page action and does whatever action needed
         if (Objects.equals(action.getFeature(), "login")
                 && Objects.equals(session.getCurrentPage(), "login")) {
@@ -234,9 +244,12 @@ public class PageVisitor implements Visitor {
     public void visit(final LoginPage loginPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
+        // Create a new user with the given credentials
         User checkUser = new User(action.getCredentials().getName(),
                 action.getCredentials().getPassword(),
                 null, null, 0);
+
         // Checks if the given user exists and proceeds to log in
         if (usersDatabase.checkUser(checkUser)) {
             session.setCurrentUser(usersDatabase.getUser(checkUser));
@@ -263,10 +276,13 @@ public class PageVisitor implements Visitor {
     public void visit(final RegisterPage registerPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
+        // Create a new user with the given credentials
         User checkUser = new User(action.getCredentials().getName(),
                 action.getCredentials().getPassword(),
                 action.getCredentials().getAccountType(), action.getCredentials().getCountry(),
                 action.getCredentials().getBalance());
+
         // Checks if the user already exists
         if (usersDatabase.checkUser(checkUser)) {
             // Display error if the user already exists
@@ -287,6 +303,7 @@ public class PageVisitor implements Visitor {
             output.add(outputGenerator.outputCreator().deepCopy());
         }
     }
+
     /**
      * This method is used for searching
      */
@@ -294,6 +311,7 @@ public class PageVisitor implements Visitor {
     public void visit(final SearchPage searchPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Gets the available movies for the current user and performs the search action
         moviesDatabase.getMoviesUser(session.getCurrentUser());
         ArrayList<Movie> searchMovies =
@@ -305,6 +323,7 @@ public class PageVisitor implements Visitor {
                         session.getCurrentUser().getCurrentMoviesList(), session.getCurrentMovie());
         output.add(outputGenerator.outputCreator().deepCopy());
     }
+
     /**
      * This method is used for filtering
      */
@@ -312,10 +331,11 @@ public class PageVisitor implements Visitor {
     public void visit(final FilterPage filterPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Gets the available movies for the current user and performs the filter action
         moviesDatabase.getMoviesUser(session.getCurrentUser());
         ArrayList<Movie> filterMovies =
-                new Filters().filter(session.getCurrentUser().getCurrentMoviesList(), action);
+                new Filters().filterMovies(session.getCurrentUser().getCurrentMoviesList(), action);
         session.getCurrentUser().setCurrentMoviesList(filterMovies);
         OutputGenerator outputGenerator =
                 new OutputGenerator("Movies", session.getCurrentUser(),
@@ -323,6 +343,7 @@ public class PageVisitor implements Visitor {
                         session.getCurrentMovie());
         output.add(outputGenerator.outputCreator().deepCopy());
     }
+
     /**
      * This method is used for upgrades
      */
@@ -330,8 +351,10 @@ public class PageVisitor implements Visitor {
     public void visit(final UpgradesPage upgradesPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Check for the required action
         if (Objects.equals(action.getFeature(), "buy tokens")) {
+
             // Check if the current user has enough balance to buy tokens
             if (session.getCurrentUser().getBalance() >= Integer.parseInt(action.getCount())) {
                 session.getCurrentUser().setTokens(Integer.parseInt(action.getCount()));
@@ -345,6 +368,7 @@ public class PageVisitor implements Visitor {
                 session.setCurrentPage("homepage neautentificat");
             }
         } else if (Objects.equals(action.getFeature(), "buy premium account")) {
+
             // Check if the current user has enough tokens to buy a premium account
             if (session.getCurrentUser().getTokens()
                     >= MagicNumbers.MIN_TOKENS_PREMIUM_ACCOUNT) {
@@ -361,6 +385,7 @@ public class PageVisitor implements Visitor {
             }
         }
     }
+
     /**
      * This method is used for seeDetails actions
      */
@@ -368,10 +393,13 @@ public class PageVisitor implements Visitor {
     public void visit(final SeeDetailsPage seeDetailsPage, final ActionsInput action,
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
+
         // Check for the required action
         if (Objects.equals(action.getFeature(), "purchase")) {
+
             // Check which account type the current user has
             if (Objects.equals(session.getCurrentUser().getAccountType(), "premium")) {
+
                 // Check if he has any free premium movies left
                 if (session.getCurrentUser().getNumFreePremiumMovies() > 0) {
                     session.getCurrentUser().setNumFreePremiumMovies(
@@ -487,6 +515,7 @@ public class PageVisitor implements Visitor {
             }
         }
     }
+
     /**
      * This method is used for handling errors
      */
@@ -495,6 +524,7 @@ public class PageVisitor implements Visitor {
                       final Session session, final UsersDatabase usersDatabase,
                       final MoviesDatabase moviesDatabase, final ArrayNode output) {
         OutputGenerator outputGenerator;
+
         // Check if a user is logged in
         if (session.isLogin()) {
             outputGenerator = new OutputGenerator("General", session.getCurrentUser(),
@@ -503,7 +533,6 @@ public class PageVisitor implements Visitor {
         } else {
             outputGenerator = new OutputGenerator("General",
                     null, null, null);
-
         }
         output.add(outputGenerator.outputCreator().deepCopy());
     }

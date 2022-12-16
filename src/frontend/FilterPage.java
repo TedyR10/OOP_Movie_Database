@@ -9,7 +9,7 @@ import visitor.PageVisitor;
 import visitor.Visitable;
 
 /**
- * This class is used for filtering pages
+ * This class is used for filtering movies
  */
 public class FilterPage implements Visitable {
 

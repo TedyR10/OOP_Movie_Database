@@ -29,6 +29,10 @@ public final class UsersDatabase {
         return instance;
     }
 
+    /**
+     * This method returns the users inside the database
+     * @return users
+     */
     public ArrayList<User> getUsers() {
         return users;
     }
@@ -49,6 +53,8 @@ public final class UsersDatabase {
             ArrayList<Movie> availableMovies = moviesDatabase.getMovies();
             for (Movie movie : availableMovies) {
                 boolean banned = false;
+
+                // Checks if the movie is banned in user's country
                 for (String country : movie.getCountriesBanned()) {
                     if (Objects.equals(this.users.get(i).getCountry(), country)) {
                         banned = true;
@@ -103,6 +109,8 @@ public final class UsersDatabase {
         ArrayList<Movie> availableMovies = moviesDatabase.getMovies();
         for (Movie movie : availableMovies) {
             boolean banned = false;
+
+            // Checks if the movie is banned in user's country
             for (String country : movie.getCountriesBanned()) {
                 if (Objects.equals(this.users.get(this.users.size() - 1).getCountry(), country)) {
                     banned = true;

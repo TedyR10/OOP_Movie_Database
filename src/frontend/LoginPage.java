@@ -9,7 +9,7 @@ import visitor.PageVisitor;
 import visitor.Visitable;
 
 /**
- * This class is used when using the login page
+ * This class is used when logging in
  */
 public class LoginPage implements Visitable {
 

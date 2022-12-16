@@ -39,7 +39,7 @@ public class User {
     }
 
     /**
-     * checks if the user has purchsed a particular movie
+     * This method checks if the user has purchsed a particular movie
      * @param nameOut gets the name to check if the movie was purchased
      * @return true if the movie was purchased
      */
@@ -53,7 +53,7 @@ public class User {
     }
 
     /**
-     * checks if the user has watched a particular movie
+     * This method checks if the user has watched a particular movie
      * @param nameOut gets the name to check if the movie was watched
      * @return true if the movie was watched
      */
@@ -65,6 +65,7 @@ public class User {
         }
         return false;
     }
+
     /**
      * for coding style
      */
