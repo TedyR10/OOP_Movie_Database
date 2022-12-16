@@ -74,5 +74,5 @@ databases. After that, we initialize the current session & start iterating throu
 * This can also be used for users/movies if the fields given as input can also be optional, not 
   only mandatory.
 * Given my astounding performance for the last homework (most lines written in main xD), I 
-  thought that this time I might want to get the prize for the most organized homework. Let me 
+  thought that this time I should get the prize for the most organized homework. Let me 
   know your thoughts and what I can improve upon :)
