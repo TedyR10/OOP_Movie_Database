@@ -13,6 +13,9 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.Comparator;
 
+import static backend.Constants.FREE_MOVIE;
+import static backend.Constants.MIN_TOKENS_MOVIE;
+
 /**
  * This class represents a user in the database
  */
@@ -91,6 +94,52 @@ public class User implements Observer {
             }
         }
         return false;
+    }
+
+    /**
+     * This method checks if the user has rated a particular movie
+     * @param nameOut gets the name to check if the movie was rated
+     * @return true if the movie was rated
+     */
+    public boolean checkRate(final String nameOut) {
+        for (Movie movie : this.ratedMovies) {
+            if (Objects.equals(movie.getName(), nameOut)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This method checks if the user has liked a particular movie
+     * @param nameOut gets the name to check if the movie was liked
+     * @return true if the movie was rated
+     */
+    public boolean checkLiked(final String nameOut) {
+        for (Movie movie : this.likedMovies) {
+            if (Objects.equals(movie.getName(), nameOut)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This method removes a movie from the user's account
+     * @param movie movie to be removed
+     */
+    public void removeMovie(final Movie movie) {
+        currentMoviesList.remove(movie);
+        purchasedMovies.remove(movie);
+        if (checkWatch(movie.getName())) {
+            watchedMovies.remove(movie);
+        }
+        if (checkRate(movie.getName())) {
+            ratedMovies.remove(movie);
+        }
+        if (checkLiked(movie.getName())) {
+            likedMovies.remove(movie);
+        }
     }
 
     /**
@@ -358,23 +407,31 @@ public class User implements Observer {
     public void update(final Object o, final String type) {
         Movie updateMovie = (Movie) o;
         boolean notified = false;
-        for (String genre : subscribedGenres) {
-            if (!notified) {
-                for (String movieGenres : updateMovie.getGenres()) {
-                    if (Objects.equals(genre, movieGenres)) {
-                        Notifications newNotification;
-                        if (Objects.equals(type, "add")) {
-                            newNotification = new Notifications(
-                                    updateMovie.getName(), "ADD");
-                        } else {
-                            newNotification = new Notifications(
-                                    updateMovie.getName(), "DELETE");
+        if (Objects.equals(type, "add")) {
+            for (String genre : subscribedGenres) {
+                if (!notified) {
+                    for (String movieGenres : updateMovie.getGenres()) {
+                        if (Objects.equals(genre, movieGenres)) {
+                            this.notifications.add(new Notifications(
+                                    updateMovie.getName(), "ADD"));
+                            notified = true;
+                            break;
                         }
-                        this.notifications.add(newNotification);
-                        notified = true;
-                        break;
                     }
                 }
+            }
+        } else if (Objects.equals(type, "delete")) {
+            if (checkPurchase(updateMovie.getName())) {
+                removeMovie(updateMovie);
+                if (Objects.equals(this.accountType, "standard")) {
+                    this.setTokens(this.getTokens() + MIN_TOKENS_MOVIE);
+                } else if (Objects.equals(this.accountType, "premium")) {
+                    this.setNumFreePremiumMovies(this.getNumFreePremiumMovies() + FREE_MOVIE);
+                }
+                this.notifications.add(new Notifications(
+                        updateMovie.getName(), "DELETE"));
+            } else {
+                currentMoviesList.remove(updateMovie);
             }
         }
     }

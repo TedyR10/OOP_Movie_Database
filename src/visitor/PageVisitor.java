@@ -549,23 +549,26 @@ public class PageVisitor implements Visitor {
             }
         } else if (Objects.equals(action.getFeature(), "like")) {
             // Check if the user has watched the movie he wants to like
-            if (session.getCurrentUser().checkWatch(
-                    session.getCurrentMovie().getName())) {
-                session.getCurrentMovie().setNumLikes(
-                        session.getCurrentMovie().getNumLikes() + 1);
-                session.getCurrentUser().getLikedMovies()
-                        .add(session.getCurrentMovie());
-                session.getCurrentUser().updateLikedGenres(session.getCurrentMovie().getGenres());
-                OutputGenerator outputGenerator =
-                        new OutputGenerator("Details", session.getCurrentUser(),
-                                session.getCurrentUser().getCurrentMoviesList(),
-                                session.getCurrentMovie());
-                output.add(outputGenerator.outputCreator().deepCopy());
-            } else {
-                // Display error if the user hasn't watched the movie yet
-                ErrorPage errorPage = new ErrorPage();
-                errorPage.accept(new PageVisitor(), action, session,
-                        usersDatabase, moviesDatabase, output);
+            if (!(session.getCurrentUser().checkLiked(session.getCurrentMovie().getName()))) {
+                if (session.getCurrentUser().checkWatch(
+                        session.getCurrentMovie().getName())) {
+                    session.getCurrentMovie().setNumLikes(
+                            session.getCurrentMovie().getNumLikes() + 1);
+                    session.getCurrentUser().getLikedMovies()
+                            .add(session.getCurrentMovie());
+                    session.getCurrentUser().updateLikedGenres(
+                            session.getCurrentMovie().getGenres());
+                    OutputGenerator outputGenerator =
+                            new OutputGenerator("Details", session.getCurrentUser(),
+                                    session.getCurrentUser().getCurrentMoviesList(),
+                                    session.getCurrentMovie());
+                    output.add(outputGenerator.outputCreator().deepCopy());
+                } else {
+                    // Display error if the user hasn't watched the movie yet
+                    ErrorPage errorPage = new ErrorPage();
+                    errorPage.accept(new PageVisitor(), action, session,
+                            usersDatabase, moviesDatabase, output);
+                }
             }
         } else if (Objects.equals(action.getFeature(), "rate")) {
             // Check if the user has watched the movie he wants to rate
