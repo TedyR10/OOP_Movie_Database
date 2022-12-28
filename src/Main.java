@@ -11,6 +11,8 @@ import session.Session;
 import java.io.File;
 import java.io.IOException;
 
+import static backend.Constants.OUT;
+
 /**
  * This class is the brain of the operation
  */
@@ -26,7 +28,7 @@ public final class Main {
      * @throws IOException in case of exceptions to reading / writing
      */
     public static void main(final String[] args) throws IOException {
-        File resultFile = new File(args[1]);
+        File resultFile = new File(OUT);
         File sourceFile = new File(args[0]);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -47,8 +49,15 @@ public final class Main {
 
         // Iterate through the required actions
         for (ActionsInput action : input.getActions()) {
+//            System.out.println("Current page: " + session.getCurrentPage());
+//            System.out.println("Current action: " + action.getType());
+//            System.out.println();
             ActionHandler actionHandler = new ActionHandler();
             actionHandler.handle(action, session, usersDatabase, moviesDatabase, output);
+        }
+
+        if (session.isLogin() && session.getCurrentUser().getAccountType().equals("premium")) {
+            session.getCurrentUser().generateRecommendation(moviesDatabase, session, output);
         }
 
         // Clear the databases for the next tests

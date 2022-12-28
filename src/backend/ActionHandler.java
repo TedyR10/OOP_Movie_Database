@@ -1,8 +1,11 @@
 package backend;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import frontend.BackPage;
 import frontend.ChangePage;
+import frontend.DatabasePage;
 import frontend.OnPage;
+import frontend.SubscribePage;
 import visitor.PageVisitor;
 import input.ActionsInput;
 import session.Session;
@@ -34,6 +37,18 @@ public final class ActionHandler {
         } else if (Objects.equals(action.getType(), "on page")) {
             OnPage onPage = new OnPage();
             onPage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
+        } else if (Objects.equals(action.getType(), "back")) {
+            BackPage backPage = new BackPage();
+            backPage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
+        } else if (Objects.equals(action.getType(), "subscribe")) {
+            SubscribePage subscribePage = new SubscribePage();
+            subscribePage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
+        } else if (Objects.equals(action.getType(), "database")) {
+            DatabasePage databasePage = new DatabasePage();
+            databasePage.accept(new PageVisitor(),
                     action, session, usersDatabase, moviesDatabase, output);
         }
     }

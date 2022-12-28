@@ -66,6 +66,10 @@ public final class UsersDatabase {
                 }
             }
         }
+
+        for (User user : this.users) {
+            moviesDatabase.addObserver(user);
+        }
     }
 
     /**
@@ -121,6 +125,8 @@ public final class UsersDatabase {
                 this.users.get(this.users.size() - 1).getCurrentMoviesList().add(movie);
             }
         }
+
+        moviesDatabase.addObserver(this.users.get(this.users.size() - 1));
     }
 
     /**

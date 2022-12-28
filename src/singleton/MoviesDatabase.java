@@ -1,10 +1,12 @@
 package singleton;
 
+import observer.Observer;
 import backend.Movie;
 import backend.User;
 import input.MovieInput;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,6 +17,7 @@ public final class MoviesDatabase {
     private static MoviesDatabase instance = null;
 
     private ArrayList<Movie> movies = new ArrayList<Movie>();
+    private List<Observer> observerList = new ArrayList<>();
 
     private MoviesDatabase() {
 
@@ -105,5 +108,50 @@ public final class MoviesDatabase {
             }
         }
         return false;
+    }
+
+    /**
+     * This method adds a movie into the database and notifies all observers about a new movie
+     * @param movie movie to add into the database
+     */
+    public void addMovie(final MovieInput movie) {
+        this.movies.add(new Movie(movie.getName(), movie.getYear(), movie.getDuration(),
+                movie.getGenres(), movie.getActors(), movie.getCountriesBanned()));
+
+        for (Observer observer : observerList) {
+            observer.update(this.movies.get(this.movies.size() - 1), "add");
+        }
+    }
+
+    /**
+     * This method removes a movie from the database and notifies all observers
+     * @param name
+     */
+    public void deleteMovie(final String name) {
+        for (Movie movie : this.movies) {
+            if (Objects.equals(movie.getName(), name)) {
+                for (Observer observer : observerList) {
+                    observer.update(movie, "delete");
+                }
+                this.movies.remove(movie);
+                break;
+            }
+        }
+    }
+
+    /**
+     * This method adds a user as an Observer
+     * @param observer Observer
+     */
+    public void addObserver(final Observer observer) {
+        this.observerList.add(observer);
+    }
+
+    /**
+     * This method eliminates an Observer
+     * @param observer Observer
+     */
+    public void removeObserver(final Observer observer) {
+        this.observerList.remove(observer);
     }
 }

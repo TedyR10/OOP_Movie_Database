@@ -1,15 +1,18 @@
 package visitor;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import frontend.BackPage;
 import frontend.ChangePage;
+import frontend.DatabasePage;
 import frontend.ErrorPage;
 import frontend.FilterPage;
-import frontend.LogoutPage;
 import frontend.LoginPage;
+import frontend.LogoutPage;
+import frontend.OnPage;
 import frontend.RegisterPage;
 import frontend.SearchPage;
-import frontend.OnPage;
 import frontend.SeeDetailsPage;
+import frontend.SubscribePage;
 import frontend.UpgradesPage;
 import input.ActionsInput;
 import session.Session;
@@ -137,4 +140,39 @@ public interface Visitor {
     void visit(ErrorPage errorPage, ActionsInput action, Session session,
                UsersDatabase usersDatabase, MoviesDatabase moviesDatabase, ArrayNode output);
 
+    /**
+     * visit back page and apply changes
+     * @param backPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
+     */
+    void visit(BackPage backPage, ActionsInput action, Session session,
+               UsersDatabase usersDatabase, MoviesDatabase moviesDatabase, ArrayNode output);
+
+    /**
+     * visit subscribe page and apply changes
+     * @param subscribePage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
+     */
+    void visit(SubscribePage subscribePage, ActionsInput action, Session session,
+               UsersDatabase usersDatabase, MoviesDatabase moviesDatabase, ArrayNode output);
+
+    /**
+     * visit database page and apply changes
+     * @param databasePage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
+     */
+    void visit(DatabasePage databasePage, ActionsInput action, Session session,
+               UsersDatabase usersDatabase, MoviesDatabase moviesDatabase, ArrayNode output);
 }

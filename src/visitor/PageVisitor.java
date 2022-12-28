@@ -1,19 +1,23 @@
 package visitor;
 
-import strategy.Filters;
-import backend.MagicNumbers;
-import backend.Movie;
-import factory.OutputGenerator;
+import frontend.BackPage;
 import frontend.ChangePage;
+import frontend.DatabasePage;
 import frontend.ErrorPage;
 import frontend.FilterPage;
-import frontend.LogoutPage;
 import frontend.LoginPage;
+import frontend.LogoutPage;
+import frontend.OnPage;
 import frontend.RegisterPage;
 import frontend.SearchPage;
-import frontend.OnPage;
 import frontend.SeeDetailsPage;
+import frontend.SubscribePage;
 import frontend.UpgradesPage;
+import input.MovieInput;
+import strategy.Filters;
+import backend.Constants;
+import backend.Movie;
+import factory.OutputGenerator;
 import singleton.MoviesDatabase;
 import backend.Search;
 import backend.User;
@@ -72,6 +76,7 @@ public class PageVisitor implements Visitor {
                 } else if (Objects.equals(action.getPage(), "movies")) {
                     moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentPage("movies");
+                    session.getPreviousPages().add("homepage autentificat");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
@@ -79,6 +84,7 @@ public class PageVisitor implements Visitor {
                     output.add(outputGenerator.outputCreator().deepCopy());
                 } else if (Objects.equals(action.getPage(), "upgrades")) {
                     session.setCurrentPage("upgrades");
+                    session.getPreviousPages().add("homepage autentificat");
                 } else {
                     // Display error if the page is not available
                     ErrorPage errorPage = new ErrorPage();
@@ -97,6 +103,7 @@ public class PageVisitor implements Visitor {
                         if (Objects.equals(movie.getName(), action.getMovie())) {
                             session.setCurrentMovie(moviesDatabase.getMovie(action.getMovie()));
                             session.setCurrentPage("see details");
+                            session.getPreviousPages().add("movies");
                             OutputGenerator outputGenerator = new OutputGenerator("Details",
                                     session.getCurrentUser(),
                                     session.getCurrentUser().getCurrentMoviesList(),
@@ -119,6 +126,7 @@ public class PageVisitor implements Visitor {
                 } else if (Objects.equals(action.getPage(), "movies")) {
                     moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentPage("movies");
+                    session.getPreviousPages().add("movies");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
@@ -141,6 +149,7 @@ public class PageVisitor implements Visitor {
                 } else if (Objects.equals(action.getPage(), "movies")) {
                     moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentPage("movies");
+                    session.getPreviousPages().add("upgrades");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
@@ -160,6 +169,7 @@ public class PageVisitor implements Visitor {
                     moviesDatabase.getMoviesUser(session.getCurrentUser());
                     session.setCurrentMovie(null);
                     session.setCurrentPage("movies");
+                    session.getPreviousPages().add("see details");
                     OutputGenerator outputGenerator = new OutputGenerator("Movies",
                             session.getCurrentUser(),
                             session.getCurrentUser().getCurrentMoviesList(),
@@ -190,6 +200,7 @@ public class PageVisitor implements Visitor {
         session.setLogin(false);
         session.setCurrentUser(null);
         session.setCurrentMovie(null);
+        session.getPreviousPages().clear();
     }
 
     /**
@@ -371,10 +382,10 @@ public class PageVisitor implements Visitor {
 
             // Check if the current user has enough tokens to buy a premium account
             if (session.getCurrentUser().getTokens()
-                    >= MagicNumbers.MIN_TOKENS_PREMIUM_ACCOUNT) {
+                    >= Constants.MIN_TOKENS_PREMIUM_ACCOUNT) {
                 session.getCurrentUser().setTokens(
                         session.getCurrentUser().getTokens()
-                                - MagicNumbers.MIN_TOKENS_PREMIUM_ACCOUNT);
+                                - Constants.MIN_TOKENS_PREMIUM_ACCOUNT);
                 session.getCurrentUser().setAccountType("premium");
             } else {
                 // Display error if the user doesn't have enough tokens
@@ -397,27 +408,55 @@ public class PageVisitor implements Visitor {
         // Check for the required action
         if (Objects.equals(action.getFeature(), "purchase")) {
 
-            // Check which account type the current user has
-            if (Objects.equals(session.getCurrentUser().getAccountType(), "premium")) {
+            if (session.getCurrentUser().checkPurchase(
+                    session.getCurrentMovie().getName())) {
+                // Display error if the user has already purchased the movie
+                ErrorPage errorPage = new ErrorPage();
+                errorPage.accept(new PageVisitor(), action, session,
+                        usersDatabase, moviesDatabase, output);
+            } else {
+                // Check which account type the current user has
+                if (Objects.equals(session.getCurrentUser().getAccountType(), "premium")) {
 
-                // Check if he has any free premium movies left
-                if (session.getCurrentUser().getNumFreePremiumMovies() > 0) {
-                    session.getCurrentUser().setNumFreePremiumMovies(
-                            session.getCurrentUser().getNumFreePremiumMovies() - 1);
-                    session.getCurrentUser().getPurchasedMovies()
-                            .add(session.getCurrentMovie());
-                    OutputGenerator outputGenerator =
-                            new OutputGenerator("Details", session.getCurrentUser(),
-                                    session.getCurrentUser().getCurrentMoviesList(),
-                                    session.getCurrentMovie());
-                    output.add(outputGenerator.outputCreator().deepCopy());
+                    // Check if he has any free premium movies left
+                    if (session.getCurrentUser().getNumFreePremiumMovies() > 0) {
+                        session.getCurrentUser().setNumFreePremiumMovies(
+                                session.getCurrentUser().getNumFreePremiumMovies() - 1);
+                        session.getCurrentUser().getPurchasedMovies()
+                                .add(session.getCurrentMovie());
+                        OutputGenerator outputGenerator =
+                                new OutputGenerator("Details", session.getCurrentUser(),
+                                        session.getCurrentUser().getCurrentMoviesList(),
+                                        session.getCurrentMovie());
+                        output.add(outputGenerator.outputCreator().deepCopy());
+                    } else {
+                        // Check if he has enough tokens to purchase the movie
+                        if (session.getCurrentUser().getTokens()
+                                >= Constants.MIN_TOKENS_MOVIE) {
+                            session.getCurrentUser().setTokens(
+                                    session.getCurrentUser().getTokens()
+                                            - Constants.MIN_TOKENS_MOVIE);
+                            session.getCurrentUser().getPurchasedMovies()
+                                    .add(session.getCurrentMovie());
+                            OutputGenerator outputGenerator =
+                                    new OutputGenerator("Details", session.getCurrentUser(),
+                                            session.getCurrentUser().getCurrentMoviesList(),
+                                            session.getCurrentMovie());
+                            output.add(outputGenerator.outputCreator().deepCopy());
+                        } else {
+                            // Display error if the user doesn't have enough tokens
+                            ErrorPage errorPage = new ErrorPage();
+                            errorPage.accept(new PageVisitor(), action, session,
+                                    usersDatabase, moviesDatabase, output);
+                        }
+                    }
                 } else {
                     // Check if he has enough tokens to purchase the movie
                     if (session.getCurrentUser().getTokens()
-                            >= MagicNumbers.MIN_TOKENS_MOVIE) {
+                            >= Constants.MIN_TOKENS_MOVIE) {
                         session.getCurrentUser().setTokens(
                                 session.getCurrentUser().getTokens()
-                                        - MagicNumbers.MIN_TOKENS_MOVIE);
+                                        - Constants.MIN_TOKENS_MOVIE);
                         session.getCurrentUser().getPurchasedMovies()
                                 .add(session.getCurrentMovie());
                         OutputGenerator outputGenerator =
@@ -432,14 +471,14 @@ public class PageVisitor implements Visitor {
                                 usersDatabase, moviesDatabase, output);
                     }
                 }
-            } else {
-                // Check if he has enough tokens to purchase the movie
-                if (session.getCurrentUser().getTokens()
-                        >= MagicNumbers.MIN_TOKENS_MOVIE) {
-                    session.getCurrentUser().setTokens(
-                            session.getCurrentUser().getTokens()
-                                    - MagicNumbers.MIN_TOKENS_MOVIE);
-                    session.getCurrentUser().getPurchasedMovies()
+            }
+        } else if (Objects.equals(action.getFeature(), "watch")) {
+            if (!(session.getCurrentUser().checkWatch(
+                    session.getCurrentMovie().getName()))) {
+                // Check if the user has purchased the movie he wants to watch
+                if (session.getCurrentUser().checkPurchase(
+                        session.getCurrentMovie().getName())) {
+                    session.getCurrentUser().getWatchedMovies()
                             .add(session.getCurrentMovie());
                     OutputGenerator outputGenerator =
                             new OutputGenerator("Details", session.getCurrentUser(),
@@ -447,28 +486,11 @@ public class PageVisitor implements Visitor {
                                     session.getCurrentMovie());
                     output.add(outputGenerator.outputCreator().deepCopy());
                 } else {
-                    // Display error if the user doesn't have enough tokens
+                    // Display error if the user hasn't purchased the movie yet
                     ErrorPage errorPage = new ErrorPage();
                     errorPage.accept(new PageVisitor(), action, session,
                             usersDatabase, moviesDatabase, output);
                 }
-            }
-        } else if (Objects.equals(action.getFeature(), "watch")) {
-            // Check if the user has purchased the movie he wants to watch
-            if (session.getCurrentUser().checkPurchase(
-                    session.getCurrentMovie().getName())) {
-                session.getCurrentUser().getWatchedMovies()
-                        .add(session.getCurrentMovie());
-                OutputGenerator outputGenerator =
-                        new OutputGenerator("Details", session.getCurrentUser(),
-                                session.getCurrentUser().getCurrentMoviesList(),
-                                session.getCurrentMovie());
-                output.add(outputGenerator.outputCreator().deepCopy());
-            } else {
-                // Display error if the user hasn't purchased the movie yet
-                ErrorPage errorPage = new ErrorPage();
-                errorPage.accept(new PageVisitor(), action, session,
-                        usersDatabase, moviesDatabase, output);
             }
         } else if (Objects.equals(action.getFeature(), "like")) {
             // Check if the user has watched the movie he wants to like
@@ -478,6 +500,7 @@ public class PageVisitor implements Visitor {
                         session.getCurrentMovie().getNumLikes() + 1);
                 session.getCurrentUser().getLikedMovies()
                         .add(session.getCurrentMovie());
+                session.getCurrentUser().updateLikedGenres(session.getCurrentMovie().getGenres());
                 OutputGenerator outputGenerator =
                         new OutputGenerator("Details", session.getCurrentUser(),
                                 session.getCurrentUser().getCurrentMoviesList(),
@@ -493,15 +516,22 @@ public class PageVisitor implements Visitor {
             // Check if the user has watched the movie he wants to rate
             if (session.getCurrentUser().checkWatch(
                     session.getCurrentMovie().getName())
-                    && Integer.parseInt(action.getRate()) <= MagicNumbers.MAX_RATING) {
-                session.getCurrentMovie().setNumRatings(
-                        session.getCurrentMovie().getNumRatings() + 1);
-                session.getCurrentMovie().getRatings().add(
-                        session.getCurrentMovie().getRatings().size(),
-                        Integer.parseInt(action.getRate()));
-                session.getCurrentMovie().setNewRating();
-                session.getCurrentUser().getRatedMovies()
-                        .add(session.getCurrentMovie());
+                    && Integer.parseInt(action.getRate()) <= Constants.MAX_RATING) {
+                if (session.getCurrentMovie().hasRated(session.getCurrentUser())) {
+                    session.getCurrentMovie().getRatings().put(
+                            session.getCurrentUser(),
+                            Integer.parseInt(action.getRate()));
+                    session.getCurrentMovie().setNewRating();
+                } else {
+                    session.getCurrentMovie().setNumRatings(
+                            session.getCurrentMovie().getNumRatings() + 1);
+                    session.getCurrentMovie().getRatings().put(
+                            session.getCurrentUser(),
+                            Integer.parseInt(action.getRate()));
+                    session.getCurrentMovie().setNewRating();
+                    session.getCurrentUser().getRatedMovies()
+                            .add(session.getCurrentMovie());
+                }
                 OutputGenerator outputGenerator =
                         new OutputGenerator("Details", session.getCurrentUser(),
                                 session.getCurrentUser().getCurrentMoviesList(),
@@ -535,5 +565,140 @@ public class PageVisitor implements Visitor {
                     null, null, null);
         }
         output.add(outputGenerator.outputCreator().deepCopy());
+    }
+
+    /**
+     * This method is used for changing back to the previous page
+     * @param backPage backPage
+     * @param action action
+     * @param session session
+     * @param usersDatabase database
+     * @param moviesDatabase database
+     * @param output output
+     */
+    @Override
+    public void visit(final BackPage backPage, final ActionsInput action, final Session session,
+                      final UsersDatabase usersDatabase, final MoviesDatabase moviesDatabase,
+                      final ArrayNode output) {
+        if (session.isLogin()) {
+            if (session.getPreviousPages().size() == 0) {
+                // Display error if the command is not available
+                ErrorPage errorPage = new ErrorPage();
+                errorPage.accept(new PageVisitor(), action, session,
+                        usersDatabase, moviesDatabase, output);
+            } else {
+                String previousPage = session.getPreviousPages()
+                        .get(session.getPreviousPages().size() - 1);
+                String currentPage = session.getCurrentPage();
+                switch (previousPage) {
+                    case "homepage autentificat":
+                        session.setCurrentPage(previousPage);
+                        session.getPreviousPages().remove(
+                                session.getPreviousPages().size() - 1);
+                        break;
+                    case "movies":
+                        moviesDatabase.getMoviesUser(session.getCurrentUser());
+                        session.setCurrentPage(previousPage);
+                        session.getPreviousPages().remove(
+                                session.getPreviousPages().size() - 1);
+                        OutputGenerator outputGenerator = new OutputGenerator("Movies",
+                                session.getCurrentUser(),
+                                session.getCurrentUser().getCurrentMoviesList(),
+                                session.getCurrentMovie());
+                        output.add(outputGenerator.outputCreator().deepCopy());
+                        break;
+                    case "see details":
+                        session.setCurrentMovie(moviesDatabase.getMovie(action.getMovie()));
+                        session.setCurrentPage(previousPage);
+                        session.getPreviousPages().remove(
+                                session.getPreviousPages().size() - 1);
+                        outputGenerator = new OutputGenerator("Details",
+                                session.getCurrentUser(),
+                                session.getCurrentUser().getCurrentMoviesList(),
+                                session.getCurrentMovie());
+                        output.add(outputGenerator.outputCreator().deepCopy());
+                        break;
+                    default:
+                        // Display error if the command is not available
+                        ErrorPage errorPage = new ErrorPage();
+                        errorPage.accept(new PageVisitor(), action, session,
+                                usersDatabase, moviesDatabase, output);
+                        break;
+                }
+
+            }
+        } else {
+            // Display error if the command is not available
+            ErrorPage errorPage = new ErrorPage();
+            errorPage.accept(new PageVisitor(), action, session,
+                    usersDatabase, moviesDatabase, output);
+        }
+    }
+
+    /**
+     * This method is used for subscriptions
+     * @param subscribePage subscribePage
+     * @param action action
+     * @param session session
+     * @param usersDatabase database
+     * @param moviesDatabase database
+     * @param output output
+     */
+    @Override
+    public void visit(final SubscribePage subscribePage, final ActionsInput action,
+                      final Session session, final UsersDatabase usersDatabase,
+                      final MoviesDatabase moviesDatabase, final ArrayNode output) {
+        if (Objects.equals(session.getCurrentPage(), "see details")) {
+            if (session.getCurrentMovie().hasGenre(action.getSubscribedGenre())
+                    && !(session.getCurrentUser().checkSubscription(action.getSubscribedGenre()))) {
+                session.getCurrentUser().getSubscribedGenres().add(action.getSubscribedGenre());
+            } else {
+                // Display error if the command is not available
+                ErrorPage errorPage = new ErrorPage();
+                errorPage.accept(new PageVisitor(), action, session,
+                        usersDatabase, moviesDatabase, output);
+            }
+        } else {
+            // Display error if the command is not available
+            ErrorPage errorPage = new ErrorPage();
+            errorPage.accept(new PageVisitor(), action, session,
+                    usersDatabase, moviesDatabase, output);
+        }
+    }
+
+    /**
+     * This method is used for database operations
+     * @param databasePage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
+     */
+    @Override
+    public void visit(final DatabasePage databasePage, final ActionsInput action,
+                      final Session session, final UsersDatabase usersDatabase,
+                      final MoviesDatabase moviesDatabase, final ArrayNode output) {
+        if (Objects.equals(action.getFeature(), "add")) {
+            if (moviesDatabase.checkMovie(action.getAddedMovie().getName())) {
+                // Display error if the movie is already in the database
+                ErrorPage errorPage = new ErrorPage();
+                errorPage.accept(new PageVisitor(), action, session,
+                        usersDatabase, moviesDatabase, output);
+            } else {
+                MovieInput addMovie = action.getAddedMovie();
+                moviesDatabase.addMovie(addMovie);
+            }
+        } else if (Objects.equals(action.getFeature(), "delete")) {
+            if (!(moviesDatabase.checkMovie(action.getDeletedMovie()))) {
+                // Display error if the movie is already in the database
+                ErrorPage errorPage = new ErrorPage();
+                errorPage.accept(new PageVisitor(), action, session,
+                        usersDatabase, moviesDatabase, output);
+            } else {
+                String deletedMovie = action.getDeletedMovie();
+                moviesDatabase.deleteMovie(deletedMovie);
+            }
+        }
     }
 }

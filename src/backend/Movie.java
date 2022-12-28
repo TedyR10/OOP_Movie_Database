@@ -1,13 +1,17 @@
 package backend;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * This class represents a movie in the database
  */
 public class Movie {
     private String name;
-    private int year;
+    private String year;
     private int duration;
     private ArrayList<String> genres;
     private ArrayList<String> actors;
@@ -17,7 +21,7 @@ public class Movie {
     private int numRatings;
 
     // We'll store all the ratings given by users to calculate the new rating
-    private ArrayList<Integer> ratings = new ArrayList<Integer>();
+    private HashMap<User, Integer> ratings = new HashMap<>();
 
     /**
      * Constructor for movie, initializes mandatory fields
@@ -28,7 +32,7 @@ public class Movie {
      * @param actors actors
      * @param countriesBanned countries banned
      */
-    public Movie(final String name, final int year, final int duration,
+    public Movie(final String name, final String year, final int duration,
                  final ArrayList<String> genres, final ArrayList<String> actors,
                  final ArrayList<String> countriesBanned) {
         this.name = name;
@@ -40,26 +44,50 @@ public class Movie {
     }
 
     /**
+     * This method checks if a movie has a given genre
+     */
+    public boolean hasGenre(final String genre) {
+        for (String genreIn : genres) {
+            if (Objects.equals(genreIn, genre)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * This method sets the updated rating for a movie after a new rating
      */
     public void setNewRating() {
-        Integer sum = 0;
-        for (Integer rate : this.ratings) {
-            sum += rate;
+        Double sum = 0.0;
+        for (Map.Entry<User, Integer> entry : ratings.entrySet()) {
+            sum += entry.getValue();
         }
-        this.rating = (double) (sum / this.numRatings);
+        this.rating = sum / this.numRatings;
+    }
+
+    /**
+     * This method checks if a user has rated a movie
+     */
+    public boolean hasRated(final User user) {
+        for (HashMap.Entry<User, Integer> entry : ratings.entrySet()) {
+            if (entry.getKey().equals(user)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * for coding style
      */
-    public ArrayList<Integer> getRatings() {
+    public Map<User, Integer> getRatings() {
         return ratings;
     }
     /**
      * for coding style
      */
-    public void setRatings(final ArrayList<Integer> ratings) {
+    public void setRatings(final HashMap<User, Integer> ratings) {
         this.ratings = ratings;
     }
     /**
@@ -77,13 +105,13 @@ public class Movie {
     /**
      * for coding style
      */
-    public int getYear() {
+    public String getYear() {
         return year;
     }
     /**
      * for coding style
      */
-    public void setYear(final int year) {
+    public void setYear(final String year) {
         this.year = year;
     }
     /**

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public final class MovieInput {
 
     private String name;
-    private int year;
+    private String year;
     private int duration;
     private ArrayList<String> genres;
     private ArrayList<String> countriesBanned;
@@ -21,7 +21,7 @@ public final class MovieInput {
         return name;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 

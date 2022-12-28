@@ -3,6 +3,9 @@ package session;
 import backend.Movie;
 import backend.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class represents the current session
  */
@@ -11,6 +14,7 @@ public class Session {
     private String currentPage;
     private User currentUser;
     private Movie currentMovie;
+    private List<String> previousPages = new ArrayList<>();
 
     /**
      * Initializes the current session fields
@@ -22,6 +26,18 @@ public class Session {
         this.currentMovie = null;
     }
 
+    /**
+     * for coding style
+     */
+    public List<String> getPreviousPages() {
+        return previousPages;
+    }
+    /**
+     * for coding style
+     */
+    public void setPreviousPages(final List<String> previousPages) {
+        this.previousPages = previousPages;
+    }
     /**
      * for coding style
      */

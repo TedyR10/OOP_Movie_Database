@@ -13,7 +13,22 @@ public final class ActionsInput {
     private String movie;
     private String rate;
     private FiltersInput filters;
+    private String subscribedGenre;
+    private MovieInput addedMovie;
+    private String deletedMovie;
     public ActionsInput() {
+    }
+
+    public String getDeletedMovie() {
+        return deletedMovie;
+    }
+
+    public MovieInput getAddedMovie() {
+        return addedMovie;
+    }
+
+    public String getSubscribedGenre() {
+        return subscribedGenre;
     }
 
     public String getType() {

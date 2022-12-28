@@ -1,6 +1,7 @@
 package factory;
 
 import backend.Movie;
+import backend.Notifications;
 import backend.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -126,6 +127,14 @@ abstract class Output {
         ArrayNode ratedMovies = convertMovies(
                 objectMapper, node, user, user.getRatedMovies(), movie);
         userOut.set("ratedMovies", ratedMovies);
+        ArrayNode notifications = objectMapper.createArrayNode();
+        for (Notifications notification : user.getNotifications()) {
+            ObjectNode notificationNode = objectMapper.createObjectNode();
+            notificationNode.put("movieName", notification.getMovieName());
+            notificationNode.put("message", notification.getMessage());
+            notifications.add(notificationNode.deepCopy());
+        }
+        userOut.set("notifications", notifications);
         return userOut.deepCopy();
     }
 }
@@ -201,6 +210,19 @@ class Details extends Output {
     }
 }
 
+class Recommend extends Output {
+    @Override
+    public ObjectNode generateOutput(final ObjectMapper objectMapper,
+                                     final ObjectNode node, final User user,
+                                     final ArrayList<Movie> movies, final Movie movie) {
+        node.putNull("error");
+        node.set("currentMoviesList", null);
+        ObjectNode userOut = userCreator(objectMapper, node, user, movies, movie);
+        node.set("currentUser", userOut);
+        return node.deepCopy();
+    }
+}
+
 /**
  * This class is the main factory for the outputs
  */
@@ -212,7 +234,7 @@ final class OutputFactory {
     }
 
     public enum OutputType {
-        General, User, Movies, Details
+        General, User, Movies, Details, Recommend
     }
 
     /**
@@ -226,15 +248,18 @@ final class OutputFactory {
     public static ObjectNode createOutput(final OutputType outputType, final User user,
                                           final ArrayList<Movie> movies, final Movie movie) {
         switch (outputType) {
-            case General:   return
-                    new GeneralOutput().generateOutput(objectMapper, node, user, movies, movie);
+            case General:
+                return new GeneralOutput().generateOutput(objectMapper, node, user, movies, movie);
             case User:
                 return new UserOutput().generateOutput(objectMapper, node, user, movies, movie);
             case Movies:
                 return new Movies().generateOutput(objectMapper, node, user, movies, movie);
             case Details:
                 return new Details().generateOutput(objectMapper, node, user, movies, movie);
-            default:    return null;
+            case Recommend:
+                return new Recommend().generateOutput(objectMapper, node, user, movies, movie);
+            default:
+                return null;
         }
     }
 }
@@ -282,6 +307,9 @@ public class OutputGenerator {
             case "Details":
                 return OutputFactory.createOutput(
                         OutputFactory.OutputType.Details, user, movies, movie);
+            case "Recommend":
+                return OutputFactory.createOutput(
+                        OutputFactory.OutputType.Recommend, user, movies, movie);
             default:
                 return null;
         }
