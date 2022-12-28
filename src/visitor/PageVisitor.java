@@ -368,7 +368,8 @@ public class PageVisitor implements Visitor {
 
             // Check if the current user has enough balance to buy tokens
             if (session.getCurrentUser().getBalance() >= Integer.parseInt(action.getCount())) {
-                session.getCurrentUser().setTokens(Integer.parseInt(action.getCount()));
+                session.getCurrentUser().setTokens(session.getCurrentUser().getTokens()
+                        + Integer.parseInt(action.getCount()));
                 session.getCurrentUser().setBalance(session.getCurrentUser().getBalance()
                         - Integer.parseInt(action.getCount()));
             } else {
@@ -589,9 +590,8 @@ public class PageVisitor implements Visitor {
             } else {
                 String previousPage = session.getPreviousPages()
                         .get(session.getPreviousPages().size() - 1);
-                String currentPage = session.getCurrentPage();
                 switch (previousPage) {
-                    case "homepage autentificat":
+                    case "homepage autentificat", "upgrades":
                         session.setCurrentPage(previousPage);
                         session.getPreviousPages().remove(
                                 session.getPreviousPages().size() - 1);

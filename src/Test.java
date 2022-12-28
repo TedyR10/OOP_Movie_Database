@@ -138,9 +138,8 @@ public final class Test {
         Config config = loadConfig();
         totalScore = config.getCheckstyleScore();
         int manualScore = config.getReadmeScore() + config.getHomeworkDesignScore();
-        int i = 0;
+
         for (final File testFile : Objects.requireNonNull(TEST_INPUTS_FILE.listFiles())) {
-            if (i == 4) {
             String testFileName = testFile.getName();
 
             preTestCleanUp();
@@ -148,10 +147,7 @@ public final class Test {
             final String[] testArgv = createTestArgv(testFile, testFileName);
             final Future<Object> future = createTimerTask(testArgv);
 
-                runTest(testFileName, config, future);
-                break;
-            }
-            i++;
+            runTest(testFileName, config, future);
         }
 
         score += Checkstyle.testCheckstyle();
@@ -164,8 +160,8 @@ public final class Test {
         System.out.println("This value can be exceeded for great implementations.");
     }
 
-    private static void runTest(final String testFileName, final Config config,
-                                final Future<Object> task) {
+    private static void runTest(final String testFileName,
+                                final Config config, final Future<Object> task) {
         ObjectMapper objectMapper = new ObjectMapper();
         File refFile = new File(CHECKER_RESOURCES_FOLDER + REF_FOLDER + testFileName);
 
@@ -216,13 +212,13 @@ public final class Test {
     private static String[] createTestArgv(final File testFile, final String testFileName) {
         List<String> listArgv = new ArrayList<>();
         listArgv.add(testFile.getAbsolutePath());
-        listArgv.add(CHECKER_RESOURCES_FOLDER + REF_FOLDER + testFileName);
+        listArgv.add(OUT_FILE);
         String[] argv = new String[0];
         return listArgv.toArray(argv);
     }
 
     private static void preTestCleanUp() {
-        //TEST_OUT_FILE.delete();
+        TEST_OUT_FILE.delete();
     }
 
     private static void printMessage(final String testFileName, final String message) {
