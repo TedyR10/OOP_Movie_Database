@@ -8,6 +8,9 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used when using the subscribe feature
+ */
 public class SubscribePage implements Visitable {
 
     public SubscribePage() {

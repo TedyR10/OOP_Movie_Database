@@ -37,6 +37,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for changing pages
+     * @param changePage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final ChangePage changePage, final ActionsInput action,
@@ -191,6 +197,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for logging out
+     * @param logoutPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final LogoutPage logoutPage, final ActionsInput action,
@@ -205,6 +217,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for on page actions
+     * @param onPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final OnPage onPage, final ActionsInput action,
@@ -250,6 +268,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for logging in
+     * @param loginPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final LoginPage loginPage, final ActionsInput action,
@@ -282,6 +306,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for registering
+     * @param registerPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final RegisterPage registerPage, final ActionsInput action,
@@ -317,6 +347,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for searching
+     * @param searchPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final SearchPage searchPage, final ActionsInput action,
@@ -337,6 +373,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for filtering
+     * @param filterPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final FilterPage filterPage, final ActionsInput action,
@@ -357,6 +399,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for upgrades
+     * @param upgradesPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final UpgradesPage upgradesPage, final ActionsInput action,
@@ -400,6 +448,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for seeDetails actions
+     * @param seeDetailsPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final SeeDetailsPage seeDetailsPage, final ActionsInput action,
@@ -549,6 +603,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for handling errors
+     * @param errorPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final ErrorPage errorPage, final ActionsInput action,
@@ -570,12 +630,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for changing back to the previous page
-     * @param backPage backPage
-     * @param action action
-     * @param session session
-     * @param usersDatabase database
-     * @param moviesDatabase database
-     * @param output output
+     * @param backPage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final BackPage backPage, final ActionsInput action, final Session session,
@@ -637,12 +697,12 @@ public class PageVisitor implements Visitor {
 
     /**
      * This method is used for subscriptions
-     * @param subscribePage subscribePage
-     * @param action action
-     * @param session session
-     * @param usersDatabase database
-     * @param moviesDatabase database
-     * @param output output
+     * @param subscribePage
+     * @param action
+     * @param session
+     * @param usersDatabase
+     * @param moviesDatabase
+     * @param output
      */
     @Override
     public void visit(final SubscribePage subscribePage, final ActionsInput action,
@@ -691,7 +751,7 @@ public class PageVisitor implements Visitor {
             }
         } else if (Objects.equals(action.getFeature(), "delete")) {
             if (!(moviesDatabase.checkMovie(action.getDeletedMovie()))) {
-                // Display error if the movie is already in the database
+                // Display error if the movie is not in the database
                 ErrorPage errorPage = new ErrorPage();
                 errorPage.accept(new PageVisitor(), action, session,
                         usersDatabase, moviesDatabase, output);

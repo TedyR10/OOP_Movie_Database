@@ -8,6 +8,9 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used when adding or removing a movie from the database
+ */
 public class DatabasePage implements Visitable {
     public DatabasePage() {
     }

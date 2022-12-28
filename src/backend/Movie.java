@@ -68,6 +68,8 @@ public class Movie {
 
     /**
      * This method checks if a user has rated a movie
+     * @param user user
+     * @return true if a user has rated a movie
      */
     public boolean hasRated(final User user) {
         for (HashMap.Entry<User, Integer> entry : ratings.entrySet()) {

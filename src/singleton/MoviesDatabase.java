@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class represents the movies database and will probably be of use in part 2
+ * This class represents the movies database
  */
 public final class MoviesDatabase {
 

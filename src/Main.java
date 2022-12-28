@@ -47,13 +47,11 @@ public final class Main {
 
         // Iterate through the required actions
         for (ActionsInput action : input.getActions()) {
-//            System.out.println("Current page: " + session.getCurrentPage());
-//            System.out.println("Current action: " + action.getType());
-//            System.out.println();
             ActionHandler actionHandler = new ActionHandler();
             actionHandler.handle(action, session, usersDatabase, moviesDatabase, output);
         }
 
+        // Generate a movie recommendation if a premium user is logged in
         if (session.isLogin() && session.getCurrentUser().getAccountType().equals("premium")) {
             session.getCurrentUser().generateRecommendation(moviesDatabase, session, output);
         }

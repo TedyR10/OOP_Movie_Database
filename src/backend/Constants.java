@@ -10,5 +10,4 @@ public final class Constants {
     public static final int MIN_TOKENS_PREMIUM_ACCOUNT = 10;
     public static final int MAX_RATING = 5;
     public static final int MIN_TOKENS_MOVIE = 2;
-    public static final String OUT = "results.out";
 }

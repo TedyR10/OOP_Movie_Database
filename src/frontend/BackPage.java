@@ -8,6 +8,9 @@ import singleton.UsersDatabase;
 import visitor.PageVisitor;
 import visitor.Visitable;
 
+/**
+ * This class is used when you want to go back a page
+ */
 public class BackPage implements Visitable {
     public BackPage() {
     }

@@ -35,7 +35,7 @@ public class User implements Observer {
     private HashMap<String, Integer> likedGenres = new HashMap<>();
 
     /**
-     * Constructor for user, initializing mandatory fields
+     * Constructor for user, initializes mandatory fields
      * @param name name
      * @param password password
      * @param accountType accountType
@@ -66,7 +66,7 @@ public class User implements Observer {
     }
 
     /**
-     * This method checks if the user has purchsed a particular movie
+     * This method checks if the user has purchased a particular movie
      * @param nameOut gets the name to check if the movie was purchased
      * @return true if the movie was purchased
      */
@@ -115,6 +115,9 @@ public class User implements Observer {
 
     /**
      * This method generates a recommendation for a premium user
+     * @param moviesDatabase moviesDatabase
+     * @param session session
+     * @param output output
      */
     public void generateRecommendation(final MoviesDatabase moviesDatabase, final Session session,
                                        final ArrayNode output) {

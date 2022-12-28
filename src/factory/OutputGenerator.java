@@ -210,6 +210,9 @@ class Details extends Output {
     }
 }
 
+/**
+ * Factory class for Recommend output
+ */
 class Recommend extends Output {
     @Override
     public ObjectNode generateOutput(final ObjectMapper objectMapper,

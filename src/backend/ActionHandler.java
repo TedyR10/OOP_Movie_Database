@@ -15,7 +15,7 @@ import singleton.UsersDatabase;
 import java.util.Objects;
 
 /**
- * This class handles actions and can be easily extended in part 2
+ * This class handles actions
  */
 public final class ActionHandler {
 
