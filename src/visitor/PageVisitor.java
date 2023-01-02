@@ -254,10 +254,15 @@ public class PageVisitor implements Visitor {
             UpgradesPage upgradesPage = new UpgradesPage();
             upgradesPage.accept(new PageVisitor(), action, session,
                     usersDatabase, moviesDatabase, output);
-        } else if (Objects.equals(session.getCurrentPage(), "see details")) {
+        } else if (Objects.equals(session.getCurrentPage(), "see details")
+                && !(Objects.equals(action.getFeature(), "subscribe"))) {
             SeeDetailsPage seeDetailsPage = new SeeDetailsPage();
             seeDetailsPage.accept(new PageVisitor(), action, session,
                     usersDatabase, moviesDatabase, output);
+        } else if (Objects.equals(action.getFeature(), "subscribe")) {
+            SubscribePage subscribePage = new SubscribePage();
+            subscribePage.accept(new PageVisitor(),
+                    action, session, usersDatabase, moviesDatabase, output);
         } else {
             // Display error if the action is unavailable
             ErrorPage errorPage = new ErrorPage();
@@ -462,7 +467,6 @@ public class PageVisitor implements Visitor {
 
         // Check for the required action
         if (Objects.equals(action.getFeature(), "purchase")) {
-
             if (session.getCurrentUser().checkPurchase(
                     session.getCurrentMovie().getName())) {
                 // Display error if the user has already purchased the movie
@@ -472,7 +476,6 @@ public class PageVisitor implements Visitor {
             } else {
                 // Check which account type the current user has
                 if (Objects.equals(session.getCurrentUser().getAccountType(), "premium")) {
-
                     // Check if he has any free premium movies left
                     if (session.getCurrentUser().getNumFreePremiumMovies() > 0) {
                         session.getCurrentUser().setNumFreePremiumMovies(
@@ -546,6 +549,12 @@ public class PageVisitor implements Visitor {
                     errorPage.accept(new PageVisitor(), action, session,
                             usersDatabase, moviesDatabase, output);
                 }
+            } else {
+                OutputGenerator outputGenerator =
+                        new OutputGenerator("Details", session.getCurrentUser(),
+                                session.getCurrentUser().getCurrentMoviesList(),
+                                session.getCurrentMovie());
+                output.add(outputGenerator.outputCreator().deepCopy());
             }
         } else if (Objects.equals(action.getFeature(), "like")) {
             // Check if the user has watched the movie he wants to like
